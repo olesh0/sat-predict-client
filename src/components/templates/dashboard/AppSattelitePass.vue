@@ -5,15 +5,16 @@
       'border-color': colorSchema.color,
       'background': colorSchema.transparent,
     }"
+    @click="$emit('click', $event)"
   >
     <div class="sat-info">
       <div>
-        <div class="name">NOAA 18</div>
+        <div class="name">{{info.sattelite.satName}}</div>
 
         <div
           class="pass-in-progress"
           :style="{ color: colorSchema.color }"
-          v-if="listNumber < 3"
+          v-if="false" 
         >
           <div class="loader">
             <div
@@ -29,7 +30,7 @@
         </div>
       </div>
 
-      <div class="pass-time">10 Feb 11:09 / {{elevationAngle}}° W</div>
+      <div class="pass-time">{{info.pass.start.formatted}} / {{Math.round(info.pass.maxElevation || 0)}}°</div>
     </div>
   </div>
 </template>
@@ -40,6 +41,10 @@ import SchemasList from "@/assets/schemas-list.json"
 export default {
   props: {
     listNumber: Number,
+    info: Object,
+  },
+  created() {
+    console.log(this.info)
   },
   computed: {
     colorSchema() {
@@ -52,7 +57,7 @@ export default {
   },
   data() {
     return {
-      elevationAngle: Math.round(Math.random() * 90) - 15,
+      elevationAngle: Math.round(Math.random() * 90),
     }
   },
 }
@@ -65,6 +70,8 @@ export default {
   padding: 1rem .7rem;
   padding-right: 1.75rem;
   font-size: 1rem;
+
+  cursor: pointer;
 
   .sat-info {
     display: grid;

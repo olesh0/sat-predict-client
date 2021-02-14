@@ -38,7 +38,9 @@ body, #app {
 
   padding: 0;
   margin: 0;
+  /* Let's pretend it's a native app */
   cursor: default;
+  user-select: none;
 
   background: #17191A;
   color: #EEE;

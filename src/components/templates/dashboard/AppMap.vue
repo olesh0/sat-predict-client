@@ -18,14 +18,14 @@
             :animationDuration="1500"
           >
             <e-markerSettings>
-                <e-markerSetting
-                  :visible="true"
-                  :template="contentTemplate"
-                  :dataSource="[
-                    { latitude: 49.95121990866204, longitude: 18.468749999999998 }
-                  ]"
-                  :animationDuration="0"
-                ></e-markerSetting>
+              <e-markerSetting
+                :visible="true"
+                :template="contentTemplate"
+                :dataSource="[
+                  { latitude: 48.522640, longitude: 25.036758 }
+                ]"
+                :animationDuration="0"
+              ></e-markerSetting>
             </e-markerSettings>
           </e-layer>
         </e-layers>

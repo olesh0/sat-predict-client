@@ -1,7 +1,8 @@
 
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import { getSatsCategories, predictPassesOfSection } from "./core/sattelites"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -9,6 +10,20 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ])
+
+ipcMain.handle('get-categories', async () => {
+  const satsList = await getSatsCategories()
+
+  return satsList
+})
+
+ipcMain.handle('get-predicted-passes', async (event, sectionName) => {
+  console.log('getting passes of', sectionName)
+
+  const passes = await predictPassesOfSection({ section: sectionName })
+
+  return passes
+})
 
 async function createWindow() {
   // Create the browser window.

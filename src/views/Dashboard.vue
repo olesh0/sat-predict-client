@@ -9,11 +9,27 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import store from '@/store'
+
 import AppSelectedSattelite from '@/components/templates/dashboard/AppSelectedSattelite.vue'
 import AppPredictedPasses from '@/components/templates/dashboard/AppPredictedPasses.vue'
 import AppMap from '@/components/templates/dashboard/AppMap.vue'
 
 export default {
+  methods: {
+    ...mapActions({
+      getCategories: 'sattelites/getCategories',
+      predictPassesForSection: 'sattelites/getPredictedPasses',
+    }),
+  },
+  async created() {
+    const categories = await this.getCategories()
+
+    store.commit('sattelites/setCategory', categories[0], { root: true })
+
+    await this.predictPassesForSection(categories[0])
+  },
   components: {
     AppSelectedSattelite,
     AppPredictedPasses,

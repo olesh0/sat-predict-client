@@ -1,5 +1,13 @@
 {
   "presets": [
+    "@babel/preset-es2017",
+    ["@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ],
     ["env", {
       "modules": false,
       "targets": {
