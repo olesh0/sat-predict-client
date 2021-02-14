@@ -1,34 +1,69 @@
 <template>
-  <div class="app-sattelite-pass">
+  <div
+    class="app-sattelite-pass"
+    :style="{
+      'border-color': colorSchema.color,
+      'background': colorSchema.transparent,
+    }"
+  >
     <div class="sat-info">
       <div>
         <div class="name">NOAA 18</div>
 
-        <div class="pass-in-progress">
+        <div
+          class="pass-in-progress"
+          :style="{ color: colorSchema.color }"
+          v-if="listNumber < 3"
+        >
           <div class="loader">
-            <div class="bar first"></div>
-            <div class="bar middle"></div>
-            <div class="bar last"></div>
+            <div
+              v-for="className in ['first', 'middle', 'last']"
+              v-bind:key="className"
+              class="bar"
+              :class="className"
+              :style="{ background: colorSchema.color }"
+            ></div>
           </div>
 
           <span>Pass in progress...</span>
         </div>
       </div>
 
-      <div class="pass-time">10 Feb 11:09 / 75° W</div>
+      <div class="pass-time">10 Feb 11:09 / {{elevationAngle}}° W</div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import SchemasList from "@/assets/schemas-list.json"
+
+export default {
+  props: {
+    listNumber: Number,
+  },
+  computed: {
+    colorSchema() {
+      const { elevationAngle } = this
+
+      if (elevationAngle < 30) return SchemasList.red
+      if (elevationAngle >= 30 && elevationAngle < 60) return SchemasList.purple
+      if (elevationAngle >= 60) return SchemasList.green
+    },
+  },
+  data() {
+    return {
+      elevationAngle: Math.round(Math.random() * 90) - 15,
+    }
+  },
+}
 </script>
 
 <style lang="less" scoped>
 .app-sattelite-pass {
-  border-left: 7px solid #22D5A4;
+  border-left: 7px solid;
   background: rgba(34, 213, 164, .2);
   padding: 1rem .7rem;
+  padding-right: 1.75rem;
   font-size: 1rem;
 
   .sat-info {

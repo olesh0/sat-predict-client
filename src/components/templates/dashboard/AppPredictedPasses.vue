@@ -7,6 +7,7 @@
         v-for="i in 25"
         v-bind:key="i"
         class="app-sattelite-pass"
+        :listNumber="i"
       />
     </div>
   </div>
