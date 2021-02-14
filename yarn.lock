@@ -214,6 +214,87 @@
     string-width "^2.0.0"
     strip-ansi "^5"
 
+"@syncfusion/ej2-base@~18.4.39", "@syncfusion/ej2-base@~18.4.41", "@syncfusion/ej2-base@~18.4.42":
+  version "18.4.42"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-base/-/ej2-base-18.4.42.tgz#0b489950dbf4b61eeafaee90b7324b3764769d84"
+  integrity sha512-IUIYYl9eR50Dz4Q28Vmy2jMr6+2rlf3jaqBmDtudpkqMzQEZbG1GnOcdR+8fG8ZgViZElwPnPAbrHClcBDVALg==
+  dependencies:
+    "@syncfusion/ej2-icons" "~18.4.39"
+
+"@syncfusion/ej2-buttons@~18.4.39":
+  version "18.4.41"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-buttons/-/ej2-buttons-18.4.41.tgz#f51ab81d72e04f05189982a5c5d28fb0030e2a57"
+  integrity sha512-EzbfXuppyEWOWoK2JURFvMA9XmQrDKoUKimDQCVroTzN6PRzMonO3CDuJ67U+kZ9yLfVqlD3jA5+qYPbJmGC7w==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.4.41"
+
+"@syncfusion/ej2-compression@~18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-compression/-/ej2-compression-18.4.39.tgz#87b4d937db85de05423fa8f2a33d7f322bb970d8"
+  integrity sha512-8yfO8StEHo2vIBWs+8l1eubB9lFR8PurcKJkuuLUp5xGDXswsMaKpU/exVHIycJV/UDIsuuNEItXGC3K1lxsrQ==
+  dependencies:
+    "@syncfusion/ej2-file-utils" "~18.4.39"
+
+"@syncfusion/ej2-data@~18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-data/-/ej2-data-18.4.39.tgz#802536aeaca980411ad30920b0592d34b17ae5fa"
+  integrity sha512-OpEezmewkLYf5dNe6kI7OX+FCoL6CKajZDUDStp+thcGz+o7BAE0J3FmGJBg/WgaXFbg7Wo0aSGjU8/uj5+Q9A==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.4.39"
+
+"@syncfusion/ej2-file-utils@~18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-file-utils/-/ej2-file-utils-18.4.39.tgz#e3929f836b21fc12380415b6942d22909ba9fdf9"
+  integrity sha512-Gn0w6+2TSpuAgpFd+h8KSnZ8zj2hJcPOGAfWy+khLZ3JaLS59SHzPW2odY2yjZwlPBmAeHRj/Oo46vwxvKTeCw==
+
+"@syncfusion/ej2-icons@~18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-icons/-/ej2-icons-18.4.39.tgz#6e180b6fd85207c767f78ee86584c444d4236775"
+  integrity sha512-l/FT5H12SSV2IwWbL39nrh5NwB8BpRdHoVOpG9/H4Ezs3q7zVAPgEMq+fAn5Tp1PBhl3cWYpSct7M2tJMSG49w==
+
+"@syncfusion/ej2-maps@18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-maps/-/ej2-maps-18.4.39.tgz#a05fc7bcdaaa03a8e8a112dcf4ca88f1e6f18cf4"
+  integrity sha512-SfGL13SZHRetWaw7LvFW95EHEXTllcreDlXDGeuXOllyr+TVaQ9c6jdXfQI9o+vpUyfj97M5gsDzjiSI0OIlDA==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.4.39"
+    "@syncfusion/ej2-buttons" "~18.4.39"
+    "@syncfusion/ej2-compression" "~18.4.39"
+    "@syncfusion/ej2-data" "~18.4.39"
+    "@syncfusion/ej2-file-utils" "~18.4.39"
+    "@syncfusion/ej2-pdf-export" "~18.4.39"
+    "@syncfusion/ej2-svg-base" "~18.4.39"
+
+"@syncfusion/ej2-pdf-export@~18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-pdf-export/-/ej2-pdf-export-18.4.39.tgz#809cb4cc86604997461749c069c6dc4c3837869c"
+  integrity sha512-yLpOkqAM6cGgH7776Lbzefqv7BfACXlOXggC/KyGBe9/tP1DGp76ApOHmSkuxrJn6gOCMYLzXyU8PAVvYC5uXw==
+  dependencies:
+    "@syncfusion/ej2-compression" "~18.4.39"
+
+"@syncfusion/ej2-svg-base@~18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-svg-base/-/ej2-svg-base-18.4.39.tgz#4fb86992f07c3b3511b3fb222ba474247bbbd3e4"
+  integrity sha512-RsqdzRCLDGXcmd8k/2IW4rqIVJL6VwV0NdzGWfvonMR0nsYY9JYITTa8P+9EtJZI2EYQNKGx3U5T8DPyS+62PQ==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.4.39"
+
+"@syncfusion/ej2-vue-base@~18.4.39":
+  version "18.4.42"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-vue-base/-/ej2-vue-base-18.4.42.tgz#39184a76fa45160d3b4080b02464dac17e679140"
+  integrity sha512-MXgYo12vH1kISR9a83t2xUqGb0gd/EwSf3WXQirJAoDaWA3s3s1ZA1OgEBSnq2Pgx7oC76FsDf/LWfsLyFVS6A==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.4.42"
+
+"@syncfusion/ej2-vue-maps@^18.4.39":
+  version "18.4.39"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-vue-maps/-/ej2-vue-maps-18.4.39.tgz#9794959622a8d2068c206ee0733f4908a7f7c4cf"
+  integrity sha512-xk00Nm51Ax7r8feH/W1NozJS1NbtKQvSjpe4ioUA8XJnrMCiLfMnm9F6RS49V5FJ+0h5gs+Z1jHRpeDdfvXDdA==
+  dependencies:
+    "@syncfusion/ej2-base" "~18.4.39"
+    "@syncfusion/ej2-maps" "18.4.39"
+    "@syncfusion/ej2-vue-base" "~18.4.39"
+
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/@szmarczak/http-timer/download/@szmarczak/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"

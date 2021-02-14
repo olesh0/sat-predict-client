@@ -99,10 +99,10 @@ export default {
       grid-gap: 4px;
 
       .bar {
-        width: 3px;
+        width: 2px;
         height: 15px;
         background: #22D5A4;
-        border-radius: 10px;
+        border-radius: 5px;
 
         transition: all 300ms;
       }

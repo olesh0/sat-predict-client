@@ -19,6 +19,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@syncfusion/ej2-vue-maps": "^18.4.39",
     "cache-loader": "^4.1.0",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",

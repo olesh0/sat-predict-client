@@ -5,8 +5,8 @@
     <div class="data-list">
       <div
         class="section"
-        v-for="section in dataSections"
-        v-bind:key="section"
+        v-for="(section, index) in dataSections"
+        v-bind:key="index"
       >
         <div
           class="section-item"

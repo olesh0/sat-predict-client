@@ -4,18 +4,20 @@
 
     <app-predicted-passes class="predicted-passes" />
 
-    <div class="map">map</div>
+    <app-map class="map" />
   </div>
 </template>
 
 <script>
 import AppSelectedSattelite from '@/components/templates/dashboard/AppSelectedSattelite.vue'
 import AppPredictedPasses from '@/components/templates/dashboard/AppPredictedPasses.vue'
+import AppMap from '@/components/templates/dashboard/AppMap.vue'
 
 export default {
   components: {
     AppSelectedSattelite,
     AppPredictedPasses,
+    AppMap,
   },
 }
 </script>
