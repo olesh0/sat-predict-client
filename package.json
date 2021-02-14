@@ -20,11 +20,13 @@
   "main": "background.js",
   "dependencies": {
     "cache-loader": "^4.1.0",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-service": "^3.0.0-rc.11",
+    "@vue/cli-service": "~4.0.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
@@ -80,7 +82,7 @@
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "^2.9.1",
+    "webpack-dev-server": "3.8.2",
     "webpack-merge": "^4.1.0"
   },
   "browserslist": [
