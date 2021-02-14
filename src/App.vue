@@ -38,6 +38,7 @@ body, #app {
 
   padding: 0;
   margin: 0;
+  cursor: default;
 
   background: #17191A;
   color: #EEE;

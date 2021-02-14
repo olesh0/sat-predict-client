@@ -62,6 +62,7 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-gap: 50px;
 
+    font-weight: 100;
     margin-top: 20px;
 
     .section {
