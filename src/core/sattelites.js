@@ -16,8 +16,8 @@ const PREDICTIONS_FILES_PATH = "../data/cache/predictions/"
 const TIME_FORMAT = "DD/MM/yyyy HH:mm:ss"
 const CACHE_LIFETIME = 3600 * 6 // 6 hours
 
-const defaultPassesWindowStart = () => Date.now() - (3600000 / 2)
-const defaultPassesWindowEnd = () => Date.now() + (86400000 * 2)
+const defaultPassesWindowStart = () => Date.now() - 60000
+const defaultPassesWindowEnd = () => Date.now() + (3600000 * 6)
 
 export const getSatsList = async ({ section = null } = {}) => {
   try {

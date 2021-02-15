@@ -18,3 +18,5 @@ selenium-debug.log
 
 #Electron-builder output
 /dist_electron
+
+*.cache.json

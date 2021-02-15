@@ -1,6 +1,6 @@
 <template>
   <div class="selected-sat">
-    <h1>NOAA 19</h1>
+    <h1>{{sattelite.satName || "-"}}</h1>
 
     <div class="data-list">
       <div
@@ -26,25 +26,57 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  data() {
-    return {
-      dataSections: [
+  computed: {
+    ...mapGetters({
+      timeItem: 'sattelites/selectedPass',
+    }),
+    sattelite() {
+      return this.timeItem && this.timeItem.sattelite || {
+        satName: '',
+        firstRow: '',
+        secondRow: '',
+      }
+    },
+    pass() {
+      return this.timeItem && this.timeItem.pass || {
+        apexAzimuth: { formatted: '-' },
+        duration: { formatted: '-' },
+        start: { formatted: '-' },
+        end: { formatted: '-' },
+        minAzimuth: { formatted: '-' },
+        maxAzimuth: { formatted: '-' },
+        maxElevation: 0,
+        maxElevationTime: { formatted: '-' },
+      }
+    },
+    dataSections() {
+      return [
         [
           { label: 'Current elevation', value: '16°' },
-          { label: 'Max elevation', value: '76°' },
-          { label: 'Start time', value: '02/12/2021 04:25 AM' },
-          { label: 'End time', value: '02/12/2021 04:35 AM' },
+          { label: 'Max elevation', value: `${Math.round(this.pass.maxElevation || 0)}°` },
+          { label: 'Start time', value: this.pass.start.formatted },
+          { label: 'End time', value: this.pass.end.formatted },
         ],
         [
           { label: 'Latitude', value: '48.436233°' },
           { label: 'Longtitude', value: '23.866857°' },
           { label: 'Altitude', value: '893km' },
-          { label: 'Distance', value: '1364km' },
+          { label: 'Pass duration', value: this.pass.duration.formatted },
         ],
-      ],
-    }
-  }
+      ]
+    },
+  },
+  watch: {
+    timeItem() {
+      console.log(this.timeItem)
+    },
+  },
+  created() {
+    console.log(this.pass)
+  },
 }
 </script>
 

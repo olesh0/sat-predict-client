@@ -3,7 +3,10 @@
     <div class="header">
       <h2>Next scheduled satellite passes</h2>
 
-      <div class="selected-cat">{{category}}</div>
+      <div
+        class="selected-cat"
+        @click="setShowSelectSection"
+      >{{category}}</div>
     </div>
 
     <div class="passes-list">
@@ -13,7 +16,7 @@
         :info="pass"
         class="app-sattelite-pass"
         :listNumber="index"
-        @click="selected = pass"
+        @click="setSelectedPass(pass)"
       />
     </div>
   </div>
@@ -21,19 +24,27 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import store from '@/store'
+
 import AppSattelitePass from '@/components/templates/dashboard/AppSattelitePass.vue'
 
 export default {
+  methods: {
+    setSelectedPass(pass) {
+      store.commit('sattelites/setSelectedPass', pass)
+    },
+    setShowSelectSection() {
+      console.log('setshow', this.showSelectSection)
+
+      store.commit('ui/setShowSelectSection', !this.showSelectSection)
+    },
+  },
   computed: {
     ...mapGetters({
       category: 'sattelites/category',
       passes: 'sattelites/passes',
+      showSelectSection: 'ui/showSelectSection',
     }),
-  },
-  data() {
-    return {
-      selected: null,
-    }
   },
   components: {
     AppSattelitePass,
@@ -59,6 +70,7 @@ export default {
       font-size: 1rem;
       font-weight: 100;
       color: #5F6D77;
+      cursor: pointer;
     }
   }
 

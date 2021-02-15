@@ -8,6 +8,7 @@ export default {
     passes: [],
     sattelite: {},
     category: null,
+    selectedPass: null,
   },
 
   getters: {
@@ -15,6 +16,7 @@ export default {
     passes: ({ passes }) => passes,
     sattelite: ({ sattelite }) => sattelite,
     category: ({ category }) => category,
+    selectedPass: ({ selectedPass }) => selectedPass,
   },
 
   mutations: {
@@ -30,20 +32,27 @@ export default {
     setCategory(state, cat) {
       state.category = cat
     },
+    setSelectedPass(state, pass) {
+      state.selectedPass = pass
+    },
   },
 
   actions: {
     async getCategories({ commit }) {
       const list = await ipcRenderer.invoke('get-categories')
+      const sortedList = list.sort()
 
-      commit('setCategories', list)
+      commit('setCategories', sortedList)
 
-      return Promise.resolve(list)
+      return Promise.resolve(sortedList)
     },
     async getPredictedPasses({ commit }, sectionName) {
-      const { passes } = await ipcRenderer.invoke('get-predicted-passes', sectionName)
+      const { passes: passesRaw } = await ipcRenderer.invoke('get-predicted-passes', sectionName)
+      const passes = passesRaw.flat().sort((a, b) => {
+        return a.pass.maxElevationTime.timestamp - b.pass.maxElevationTime.timestamp
+      })
 
-      commit('setPasses', passes.flat())
+      commit('setPasses', passes)
 
       return Promise.resolve(passes)
     },

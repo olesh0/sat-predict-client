@@ -14,7 +14,7 @@
         <div
           class="pass-in-progress"
           :style="{ color: colorSchema.color }"
-          v-if="false" 
+          v-if="passInProgress"
         >
           <div class="loader">
             <div
@@ -43,22 +43,23 @@ export default {
     listNumber: Number,
     info: Object,
   },
-  created() {
-    console.log(this.info)
-  },
   computed: {
+    passInProgress() {
+      const currentTime = Date.now()
+      const { start, end } = this.info.pass
+
+      const passStarted = currentTime > start.timestamp
+      const passFinished = currentTime > end.timestamp
+
+      return passStarted && !passFinished
+    },
     colorSchema() {
-      const { elevationAngle } = this
+      const { maxElevation: elevationAngle } = this.info.pass
 
       if (elevationAngle < 30) return SchemasList.red
       if (elevationAngle >= 30 && elevationAngle < 60) return SchemasList.purple
       if (elevationAngle >= 60) return SchemasList.green
     },
-  },
-  data() {
-    return {
-      elevationAngle: Math.round(Math.random() * 90),
-    }
   },
 }
 </script>
