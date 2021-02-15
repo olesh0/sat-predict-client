@@ -39,11 +39,11 @@ export default {
     ...mapActions({
       observeSattelite: 'sattelites/observeSattelite',
     }),
-    async calculateProgress() {
+    calculateProgress() {
       if (this.timeItem && this.timeItem.sattelite) {
-        this.observe = await this.observeSattelite(this.sattelite)
-
-        console.log(this.observe)
+        this.observeSattelite(this.sattelite).then((data) => {
+          this.observe = data
+        })
       }
 
       if (this.passInProgress) {
