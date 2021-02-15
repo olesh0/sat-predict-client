@@ -201,10 +201,11 @@ export const predictPasses = ({
   }
 }
 
-export const getSatInfo = ({ sattelite }) => {
+export const getSatInfo = ({ sattelite, location }) => {
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
+  const qth = location || [48.522034, 25.036870, .1] // Location. For now defaulted to Ukraine, Kolomyia
 
-  const satInfo = jspredict.observe(tle, null)
+  const satInfo = jspredict.observe(tle, qth)
 
   // Gotta format this data somehow (like add human readable velocity and etc.)
   return Promise.resolve(satInfo)

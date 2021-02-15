@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import { getSatsCategories, predictPassesOfSection } from "./core/sattelites"
+import { getSatsCategories, predictPassesOfSection, getSatInfo } from "./core/sattelites"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -23,6 +23,14 @@ ipcMain.handle('get-predicted-passes', async (event, sectionName) => {
   const passes = await predictPassesOfSection({ section: sectionName })
 
   return passes
+})
+
+ipcMain.handle('observe-sattelite', async (event, sattelite) => {
+  console.log('observing sattelite', sattelite)
+
+  const data = await getSatInfo({ sattelite })
+
+  return data
 })
 
 async function createWindow() {

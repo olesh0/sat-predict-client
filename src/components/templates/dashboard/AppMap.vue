@@ -39,11 +39,20 @@
             <e-markerSettings>
               <e-markerSetting
                 :visible="true"
-                :template="contentTemplate"
+                :template="satteliteMarkerContent"
                 :dataSource="[
-                  { latitude: 48.522640, longitude: 25.036758 }
+                  { latitude: sattelite.latitude, longitude: sattelite.longitude },
                 ]"
-                :animationDuration="0"
+                :animationDuration="500"
+              ></e-markerSetting>
+
+              <e-markerSetting
+                :visible="true"
+                :template="userLocationMarkerContent"
+                :dataSource="[
+                  { latitude: 48.522640, longitude: 25.036758 },
+                ]"
+                :animationDuration="500"
               ></e-markerSetting>
             </e-markerSettings>
           </e-layer>
@@ -68,6 +77,7 @@ export default Vue.extend({
     ...mapGetters({
       showSelectSection: 'ui/showSelectSection',
       categories: 'sattelites/categories',
+      sattelite: 'sattelites/sattelite',
     }),
   },
   methods: {
@@ -86,10 +96,22 @@ export default Vue.extend({
   },
   data() {
     return {
-      contentTemplate: () => ({
+      satteliteMarkerContent: () => ({
         template: Vue.component('MapsComponent', {
           template: `
             <div class="marker-template">
+              <div class="point" />
+            </div>
+          `,
+          data() {
+            return {}
+          }
+        }),
+      }),
+      userLocationMarkerContent: () => ({
+        template: Vue.component('MapsComponent', {
+          template: `
+            <div class="marker-template user-location">
               <div class="point" />
             </div>
           `,
@@ -181,12 +203,27 @@ export default Vue.extend({
     }
 
     .marker-template {
-      border-radius: 20px;
-      width: 80px;
-      height: 80px;
+      border-radius: 50%;
       background: rgba(213, 34, 34, .2);
       border: 2px solid rgba(213, 34, 34, .8);
       display: flex;
+
+      width: 70px;
+      height: 70px;
+
+      transition: all 1s;
+
+      &.user-location {
+        background: rgba(142, 34, 213, .2);
+        border-color: rgba(142, 34, 213, .8);
+
+        width: 55px;
+        height: 55px;
+
+        .pint {
+          background: #8E22D5;
+        }
+      }
 
       .point {
         margin: auto;

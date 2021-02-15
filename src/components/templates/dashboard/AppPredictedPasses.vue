@@ -15,8 +15,8 @@
         v-bind:key="index"
         :info="pass"
         class="app-sattelite-pass"
-        :listNumber="index"
-        @click="setSelectedPass(pass)"
+        :isSelected="selectedPass == index"
+        @click="setSelectedPass(pass, index)"
       />
     </div>
   </div>
@@ -29,9 +29,15 @@ import store from '@/store'
 import AppSattelitePass from '@/components/templates/dashboard/AppSattelitePass.vue'
 
 export default {
+  data() {
+    return {
+      selectedPass: null,
+    }
+  },
   methods: {
-    setSelectedPass(pass) {
+    setSelectedPass(pass, index) {
       store.commit('sattelites/setSelectedPass', pass)
+      this.selectedPass = index
     },
     setShowSelectSection() {
       console.log('setshow', this.showSelectSection)
