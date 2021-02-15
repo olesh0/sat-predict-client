@@ -1,12 +1,12 @@
 <template>
   <div class="selected-sat">
-    <h1>NOAA 19</h1>
+    <h1>{{sattelite.satName || "-"}}</h1>
 
     <div class="data-list">
       <div
         class="section"
-        v-for="section in dataSections"
-        v-bind:key="section"
+        v-for="(section, index) in dataSections"
+        v-bind:key="index"
       >
         <div
           class="section-item"
@@ -19,32 +19,111 @@
       </div>
     </div>
 
-    <div class="progress">
-      <div class="bar" />
+    <div
+      class="progress"
+      :class="{ show: passInProgress && progress <= 100 }"
+    >
+      <div
+        class="bar"
+        :style="{ width: `${progress}%` }"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
+  methods: {
+    ...mapActions({
+      observeSattelite: 'sattelites/observeSattelite',
+    }),
+    async calculateProgress() {
+      if (this.timeItem && this.timeItem.sattelite) {
+        this.observe = await this.observeSattelite(this.sattelite)
+
+        console.log(this.observe)
+      }
+
+      if (this.passInProgress) {
+        const { start, duration } = this.pass
+
+        const durationSeconds = Math.round(duration.seconds / 1000)
+        const secondsPassed = (Date.now() - start.timestamp) / 1000
+
+        this.progress = (secondsPassed / durationSeconds) * 100
+      }
+    },
+  },
+  computed: {
+    ...mapGetters({
+      timeItem: 'sattelites/selectedPass',
+    }),
+    passInProgress() {
+      const currentTime = Date.now()
+      const { start, end } = this.pass
+
+      const passStarted = currentTime > start.timestamp
+      const passFinished = currentTime > end.timestamp
+
+      return passStarted && !passFinished
+    },
+    sattelite() {
+      return this.timeItem && this.timeItem.sattelite || {
+        satName: '',
+        firstRow: '',
+        secondRow: '',
+      }
+    },
+    pass() {
+      return this.timeItem && this.timeItem.pass || {
+        apexAzimuth: { formatted: '-' },
+        duration: { formatted: '-' },
+        start: { formatted: '-' },
+        end: { formatted: '-' },
+        minAzimuth: { formatted: '-' },
+        maxAzimuth: { formatted: '-' },
+        maxElevation: 0,
+        maxElevationTime: { formatted: '-' },
+      }
+    },
+    dataSections() {
+      return [
+        [
+          { label: 'Current elevation', value: `${(this.observe.elevation || 0).toFixed(1)}°` },
+          { label: 'Max elevation', value: `${Math.round(this.pass.maxElevation || 0)}°` },
+          { label: 'Range', value: `${Math.round(this.observe.rangeSat || 0)}km` },
+          { label: 'Start time', value: this.pass.start.formatted },
+          { label: 'End time', value: this.pass.end.formatted },
+        ],
+        [
+          { label: 'Latitude', value: (this.observe.latitude || 0).toFixed(6) },
+          { label: 'Longitude', value: (this.observe.longitude || 0).toFixed(6) },
+          { label: 'Altitude', value: `${Math.round(this.observe.altitude)}km` },
+          { label: 'Pass duration', value: this.pass.duration.formatted },
+        ],
+      ]
+    },
+  },
   data() {
     return {
-      dataSections: [
-        [
-          { label: 'Current elevation', value: '16°' },
-          { label: 'Max elevation', value: '76°' },
-          { label: 'Start time', value: '02/12/2021 04:25 AM' },
-          { label: 'End time', value: '02/12/2021 04:35 AM' },
-        ],
-        [
-          { label: 'Latitude', value: '48.436233°' },
-          { label: 'Longtitude', value: '23.866857°' },
-          { label: 'Altitude', value: '893km' },
-          { label: 'Distance', value: '1364km' },
-        ],
-      ],
+      interval: null,
+      progress: 0,
+      observe: {},
     }
-  }
+  },
+  watch: {
+    timeItem() {
+      this.calculateProgress()
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.interval)
+  },
+  created() {
+    this.interval = setInterval(this.calculateProgress, 1000)
+  },
 }
 </script>
 
@@ -86,18 +165,25 @@ export default {
 
   .progress {
     width: 100%;
-    height: 3px;
+    height: 0px;
     border-radius: 10px;
     overflow: hidden;
-    margin-top: 20px;
+    margin-top: 0px;
 
     background: rgba(213, 34, 34, .2);
+    transition: all 300ms;
+
+    &.show {
+      height: 3px;
+      margin-top: 10px;
+    }
 
     .bar {
       width: 30%;
       height: 100%;
 
       background: rgb(213, 34, 34);
+      transition: all 700ms;
     }
   }
 }

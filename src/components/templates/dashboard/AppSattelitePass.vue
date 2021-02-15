@@ -1,19 +1,21 @@
 <template>
   <div
     class="app-sattelite-pass"
+    :class="{ selected: isSelected }"
     :style="{
       'border-color': colorSchema.color,
-      'background': colorSchema.transparent,
+      'background': isSelected ? colorSchema.highlight : colorSchema.transparent,
     }"
+    @click="$emit('click', $event)"
   >
     <div class="sat-info">
       <div>
-        <div class="name">NOAA 18</div>
+        <div class="name">{{info.sattelite.satName}}</div>
 
         <div
           class="pass-in-progress"
+          :class="{ show: inProgress }"
           :style="{ color: colorSchema.color }"
-          v-if="listNumber < 3"
         >
           <div class="loader">
             <div
@@ -29,7 +31,7 @@
         </div>
       </div>
 
-      <div class="pass-time">10 Feb 11:09 / {{elevationAngle}}° W</div>
+      <div class="pass-time">{{info.pass.start.formatted}} / {{Math.round(info.pass.maxElevation || 0)}}°</div>
     </div>
   </div>
 </template>
@@ -38,22 +40,40 @@
 import SchemasList from "@/assets/schemas-list.json"
 
 export default {
-  props: {
-    listNumber: Number,
+  data() {
+    return {
+      inProgress: false,
+      interval: null,
+    }
+  },
+  methods: {
+    calculatePassInProgress() {
+      const currentTime = Date.now()
+      const { start, end } = this.info.pass
+
+      const passStarted = currentTime > start.timestamp
+      const passFinished = currentTime > end.timestamp
+
+      this.inProgress = passStarted && !passFinished
+    },
+  },
+  created() {
+    this.calculatePassInProgress()
+
+    this.interval = setInterval(this.calculatePassInProgress, 1000)
   },
   computed: {
     colorSchema() {
-      const { elevationAngle } = this
+      const { maxElevation: elevationAngle } = this.info.pass
 
       if (elevationAngle < 30) return SchemasList.red
       if (elevationAngle >= 30 && elevationAngle < 60) return SchemasList.purple
       if (elevationAngle >= 60) return SchemasList.green
     },
   },
-  data() {
-    return {
-      elevationAngle: Math.round(Math.random() * 90) - 15,
-    }
+  props: {
+    isSelected: Boolean,
+    info: Object,
   },
 }
 </script>
@@ -65,6 +85,16 @@ export default {
   padding: 1rem .7rem;
   padding-right: 1.75rem;
   font-size: 1rem;
+
+  cursor: pointer;
+
+  &.selected {
+    .sat-info {
+      .pass-time {
+        color: #eee;
+      }
+    }
+  }
 
   .sat-info {
     display: grid;
@@ -89,7 +119,18 @@ export default {
     grid-template-columns: auto 1fr;
     grid-gap: 7px;
 
-    margin-top: 3px;
+    margin-top: -20px;
+    visibility: hidden;
+    opacity: 0;
+
+    transition: all 300ms;
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+
+      margin-top: 3px;
+    }
 
     .loader {
       display: grid;
@@ -99,10 +140,10 @@ export default {
       grid-gap: 4px;
 
       .bar {
-        width: 3px;
+        width: 2px;
         height: 15px;
         background: #22D5A4;
-        border-radius: 10px;
+        border-radius: 5px;
 
         transition: all 300ms;
       }
