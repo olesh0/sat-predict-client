@@ -91,15 +91,15 @@ export default {
     dataSections() {
       return [
         [
-          { label: 'Current elevation', value: `${(this.observe.elevation || 0).toFixed(1)}°` },
           { label: 'Max elevation', value: `${Math.round(this.pass.maxElevation || 0)}°` },
+          { label: 'Current elevation', value: `${(this.observe.elevation || 0).toFixed(1)}°` },
           { label: 'Range', value: `${Math.round(this.observe.rangeSat || 0)}km` },
-          { label: 'Start time', value: this.pass.start.formatted },
-          { label: 'End time', value: this.pass.end.formatted },
-        ],
-        [
           { label: 'Latitude', value: (this.observe.latitude || 0).toFixed(6) },
           { label: 'Longitude', value: (this.observe.longitude || 0).toFixed(6) },
+        ],
+        [
+          { label: 'Start time', value: this.pass.start.formatted },
+          { label: 'End time', value: this.pass.end.formatted },
           { label: 'Altitude', value: `${Math.round(this.observe.altitude)}km` },
           { label: 'Pass duration', value: this.pass.duration.formatted },
         ],
