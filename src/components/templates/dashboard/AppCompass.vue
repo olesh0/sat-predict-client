@@ -1,13 +1,33 @@
 <template>
   <div class="app-compass">
     <div class="content" ref="content">
-      <canvas ref="compassCanvas">
-        If you see this text, then you either look into the code, or electron is being weird...
-      </canvas>
+      <div class="canvas-block">
+        <div class="vertical-heading">
+          <div>W</div>
+          <div>270°</div>
+        </div>
 
-      <pre>
-        {{timeItem.pass}}
-      </pre>
+        <div>
+          <div class="horizontal-heading">N 0°</div>
+
+          <canvas ref="compassCanvas">
+            If you see this text, then you either look into the code, or electron is being weird...
+          </canvas>
+
+          <div class="horizontal-heading">S 180°</div>
+        </div>
+
+        <div class="vertical-heading">
+          <div>E</div>
+          <div>90°</div>
+        </div>
+      </div>
+
+      <!-- <div class="text-info">
+        <pre>
+          {{timeItem.pass}}
+        </pre>
+      </div> -->
     </div>
   </div>
 </template>
@@ -79,14 +99,19 @@ export default {
       this.drawBasicCompass()
     },
   },
+  watch: {
+    timeItem() {
+      this.calculateCompass()
+    },
+  },
   mounted() {
     const { compassCanvas, content } = this.$refs
 
     if (compassCanvas) {
       console.log(this.$refs.compassCanvas)
 
-      compassCanvas.width = content.clientWidth - 50
-      compassCanvas.height = content.clientWidth - 50
+      compassCanvas.width = content.clientWidth - 130
+      compassCanvas.height = content.clientWidth - 130
 
       this.calculateCompass()
     }
@@ -104,15 +129,40 @@ export default {
   padding: 80px 20px 20px;
 
   .content {
-    max-height: 80vh;
-    overflow: auto;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    text-align: center;
+    .canvas-block {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-gap: 5px;
 
-    canvas {
-      background: rgba(0, 0, 0, .15);
-      border: 2px solid #22D5A4;
-      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+
+      .heading {
+        color: #5F6D77;
+        font-size: 1rem;
+        text-align: center;
+      }
+
+      .vertical-heading {
+        margin: 0 5px;
+        .heading();
+      }
+
+      .horizontal-heading {
+        margin: 10px 0;
+        .heading();
+      }
+
+      canvas {
+        background: rgba(0, 0, 0, .15);
+        border: 2px solid #22D5A4;
+        border-radius: 50%;
+      }
     }
   }
 }

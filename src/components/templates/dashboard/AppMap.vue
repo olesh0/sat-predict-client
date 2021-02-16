@@ -47,7 +47,6 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { MapsPlugin, Marker, Zoom, Highlight, Selection } from '@syncfusion/ej2-vue-maps'
 
-import store from '@/store'
 import worldMap from '@/assets/world-map.json'
 
 Vue.use(MapsPlugin)
@@ -121,37 +120,38 @@ export default Vue.extend({
       padding: 0;
     }
   }
+}
 
-  .marker-template {
-    border-radius: 50%;
-    background: rgba(213, 34, 34, .2);
-    border: 2px solid rgba(213, 34, 34, .8);
-    display: flex;
+.marker-template {
+  border-radius: 50%;
+  background: rgba(213, 34, 34, .2);
+  border: 2px solid rgba(213, 34, 34, .8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    width: 70px;
-    height: 70px;
+  width: 70px;
+  height: 70px;
 
-    transition: all 1s;
+  transition: all 1s;
 
-    &.user-location {
-      background: rgba(142, 34, 213, .2);
-      border-color: rgba(142, 34, 213, .8);
+  &.user-location {
+    background: rgba(142, 34, 213, .2);
+    border-color: rgba(142, 34, 213, .8);
 
-      width: 55px;
-      height: 55px;
+    width: 55px;
+    height: 55px;
 
-      .pint {
-        background: #8E22D5;
-      }
+    .pint {
+      background: #8E22D5;
     }
+  }
 
-    .point {
-      margin: auto;
-      width: 5px;
-      height: 5px;
-      background: rgba(213, 34, 34, 1);
-      border-radius: 4px;
-    }
+  .point {
+    width: 5px;
+    height: 5px;
+    background: rgba(213, 34, 34, 1);
+    border-radius: 4px;
   }
 }
 </style>
