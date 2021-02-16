@@ -11,7 +11,7 @@
 
     <div class="passes-list">
       <app-sattelite-pass
-        v-for="(pass, index) in passes"
+        v-for="(pass, index) in passes.filter((_, index) => index < MAX_ITEMS)"
         v-bind:key="index"
         :info="pass"
         class="app-sattelite-pass"
@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       selectedPass: null,
+      MAX_ITEMS: 40,
     }
   },
   methods: {
