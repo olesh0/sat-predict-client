@@ -23,11 +23,15 @@
         </div>
       </div>
 
-      <!-- <div class="text-info">
-        <pre>
-          {{timeItem.pass}}
-        </pre>
-      </div> -->
+      <div
+        class="text-info"
+        v-if="timeItem.pass"
+      >
+        <div><b>max azimuth (start):</b> {{Math.round(timeItem.pass.maxAzimuth.degress)}}°</div>
+        <div><b>min azimuth (end):</b> {{Math.round(timeItem.pass.minAzimuth.degress)}}°</div>
+        <div><b>apex azimuth:</b> {{Math.round(timeItem.pass.apexAzimuth.degress)}}°</div>
+        <div><b>max elevation:</b> {{Math.round(timeItem.pass.maxElevation)}}°</div>
+      </div>
     </div>
   </div>
 </template>
@@ -59,8 +63,8 @@ export default {
       const halfWidth = canvas.clientWidth / 2
 
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(34, 213, 164, 1)'
       ctx.lineWidth = 1
+      ctx.strokeStyle = '#5F6D77'
 
       // Cross
       ctx.moveTo(centerX, 0)
@@ -95,12 +99,71 @@ export default {
       ctx.arc(centerX, centerY, countDegressPercentage(90), 0, 2 * Math.PI)
       ctx.stroke()
     },
+    drawPassPath() {
+      const {
+        pass: {
+          maxAzimuth: { degress: maxAzimuth }, // appears at
+          minAzimuth: { degress: minAzimuth }, // disappears at
+          apexAzimuth: { degress: apexAzimuth }, // don't even know what this is
+          maxElevation,
+        },
+      } = this.timeItem
+
+      // console.log({
+      //   maxAzimuth,
+      //   minAzimuth,
+      //   maxElevation,
+      // })
+
+      const appearAzimuth = this.getPointCoordsByDegress(maxAzimuth)
+      const disappearAzimuth = this.getPointCoordsByDegress(minAzimuth)
+
+      console.log({ appearAzimuth, disappearAzimuth })
+
+      this.ctx.moveTo(appearAzimuth.x, appearAzimuth.y)
+      this.ctx.lineTo(disappearAzimuth.x, disappearAzimuth.y)
+      this.ctx.stroke()
+    },
+    genPoint(centerX, centerY, degree, radius) {
+      const radPerDeg = Math.PI / 180
+
+      const x = centerX + (radius * Math.cos(degree * radPerDeg));
+      const y = centerY + (radius * Math.sin(degree * radPerDeg));
+
+      return { x, y }
+    },
+    getPointCoordsByDegress(degress) {
+      const rightAngle = 90
+      const section = Math.ceil(degress / rightAngle)
+
+      const canvasWidth = this.canvas.clientWidth
+      const canvasHeight = this.canvas.clientHeight
+
+      const centerX = canvasWidth / 2
+      const centerY = canvasHeight / 2
+
+      const { x, y } = this.genPoint(
+        centerX,
+        centerY,
+        degress - 90,
+        centerX
+      )
+
+      this.ctx.beginPath()
+      this.ctx.rect(x - 2, y - 2, 4, 4)
+      this.ctx.fill()
+
+      return { x, y, section }
+    },
     calculateCompass() {
       this.drawBasicCompass()
+      this.drawPassPath()
     },
   },
   watch: {
     timeItem() {
+      this.canvas.width = this.canvas.width
+
       this.calculateCompass()
     },
   },
@@ -133,6 +196,26 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+
+    .text-info {
+      text-align: left !important;
+      margin-top: 20px;
+      width: 90%;
+
+      div {
+        &, b {
+          font-weight: 100;
+        }
+
+        color: rgb(34, 213, 164);
+        margin-bottom: 5px;
+
+        b {
+          color: #5F6D77;
+        }
+      }
+    }
 
     .canvas-block {
       display: grid;
@@ -160,7 +243,7 @@ export default {
 
       canvas {
         background: rgba(0, 0, 0, .15);
-        border: 2px solid #22D5A4;
+        border: 1px solid #5F6D77;
         border-radius: 50%;
       }
     }
