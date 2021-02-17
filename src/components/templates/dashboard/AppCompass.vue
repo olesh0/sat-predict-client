@@ -104,7 +104,7 @@ export default {
         pass: {
           maxAzimuth: { degress: maxAzimuth }, // appears at
           minAzimuth: { degress: minAzimuth }, // disappears at
-          apexAzimuth: { degress: apexAzimuth }, // don't even know what this is
+          apexAzimuth: { degress: apexAzimuth }, // direction of elevation?
           maxElevation,
         },
       } = this.timeItem
@@ -115,13 +115,17 @@ export default {
       //   maxElevation,
       // })
 
+      const centerX = this.canvas.clientWidth / 2
+
+      const customApexAzimuthCoordRadius = (centerX / 100) * maxElevation
+
       const appearAzimuth = this.getPointCoordsByDegress(maxAzimuth)
       const disappearAzimuth = this.getPointCoordsByDegress(minAzimuth)
-
-      console.log({ appearAzimuth, disappearAzimuth })
+      const apexAzimuthCoord = this.getPointCoordsByDegress(apexAzimuth, customApexAzimuthCoordRadius)
 
       this.ctx.moveTo(appearAzimuth.x, appearAzimuth.y)
-      this.ctx.lineTo(disappearAzimuth.x, disappearAzimuth.y)
+
+      this.ctx.quadraticCurveTo(apexAzimuthCoord.x, apexAzimuthCoord.y, disappearAzimuth.x, disappearAzimuth.y)
       this.ctx.stroke()
     },
     genPoint(centerX, centerY, degree, radius) {
@@ -132,7 +136,7 @@ export default {
 
       return { x, y }
     },
-    getPointCoordsByDegress(degress) {
+    getPointCoordsByDegress(degress, customRadius = null) {
       const rightAngle = 90
       const section = Math.ceil(degress / rightAngle)
 
@@ -146,12 +150,8 @@ export default {
         centerX,
         centerY,
         degress - 90,
-        centerX
+        customRadius || centerX
       )
-
-      this.ctx.beginPath()
-      this.ctx.rect(x - 2, y - 2, 4, 4)
-      this.ctx.fill()
 
       return { x, y, section }
     },
