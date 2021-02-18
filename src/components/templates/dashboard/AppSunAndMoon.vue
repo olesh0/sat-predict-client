@@ -65,9 +65,9 @@ const TIME_FORMAT = "DD/MM HH:mm:ss A"
 export default {
   computed: {
     sunHeading() {
-      const degress = this.radiansToDegress(this.data.sunPosition.azimuth)
+      const degress = Math.round(this.radiansToDegress(this.data.sunPosition.azimuth))
 
-      return this.normalizeBearing(Math.round(degress))
+      return this.normalizeBearing(degress < 0 ? degress + 360 : degress)
     },
     sunAltitude() {
       const radiansAltitude = this.radiansToDegress(this.data.sunPosition.altitude)
@@ -94,11 +94,11 @@ export default {
       const { moon } = this.data
 
       const altitude = this.radiansToDegress(moon.altitude).toFixed(2)
-      const azimuth = this.radiansToDegress(moon.azimuth).toFixed(0)
+      const azimuth = this.radiansToDegress(moon.azimuth)
 
       return {
         altitude,
-        azimuth: this.normalizeBearing(azimuth),
+        azimuth: this.normalizeBearing(Math.round(azimuth < 0 ? azimuth + 360 : azimuth)),
       }
     },
     moonData() {
@@ -111,12 +111,31 @@ export default {
       const moonDistance = this.normalizeNumber(Math.round(moon.distance))
       const parallacticAngle = this.radiansToDegress(moon.parallacticAngle).toFixed(2)
 
-      return [
-        { label: 'Set', value: moment(moonTimes.set).format(TIME_FORMAT) },
+      const dataList = [
         { label: 'Distance', value: `${moonDistance}km` },
         { label: 'Fraction', value: moonIll.fraction.toFixed(2) },
         { label: 'Parallactic angle', value: `${parallacticAngle}°` },
       ]
+
+      if (moonTimes.rise) {
+        dataList.unshift({ label: 'Rise', value: moment(moonTimes.rise).format(TIME_FORMAT) })
+      }
+
+      if (moonTimes.set) {
+        dataList.unshift({ label: 'Set', value: moment(moonTimes.set).format(TIME_FORMAT) },)
+      }
+
+      if (moonTimes.alwaysUp || moonTimes.alwaysDown) {
+        const isUp = moonTimes.alwaysUp && 'Moon is always up'
+        const isDown = moonTimes.alwaysDown && 'Moon is always down'
+
+        dataList.unshift({
+          label: 'Fact',
+          value: isUp || isDown,
+        })
+      }
+
+      return dataList
     },
   },
   data() {
