@@ -150,7 +150,10 @@ export default {
     },
     calculateCompass() {
       this.drawBasicCompass()
-      this.drawPassPath()
+
+      if (this.timeItem && this.timeItem.pass) {
+        this.drawPassPath()
+      }
     },
   },
   watch: {
@@ -164,8 +167,6 @@ export default {
     const { compassCanvas, content } = this.$refs
 
     if (compassCanvas) {
-      console.log(this.$refs.compassCanvas)
-
       compassCanvas.width = content.clientWidth - 130
       compassCanvas.height = content.clientWidth - 130
 

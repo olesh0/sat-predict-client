@@ -58,9 +58,7 @@ export default Vue.extend({
     }),
   },
   methods: {
-    handleMapClick: (args) => {
-      console.log(args)
-    },
+    handleMapClick: () => {},
   },
   data() {
     return {

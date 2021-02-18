@@ -136,7 +136,7 @@ export default {
       left: 0;
 
       padding: 10px;
-      background: rgba(0, 0, 0, .8);
+      background: #242729;
       justify-content: flex-start;
 
       display: grid;
