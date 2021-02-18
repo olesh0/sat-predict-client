@@ -109,15 +109,8 @@ export default {
         },
       } = this.timeItem
 
-      // console.log({
-      //   maxAzimuth,
-      //   minAzimuth,
-      //   maxElevation,
-      // })
-
       const centerX = this.canvas.clientWidth / 2
-
-      const customApexAzimuthCoordRadius = (centerX / 100) * maxElevation
+      const customApexAzimuthCoordRadius = centerX - ((centerX / 100) * maxElevation)
 
       const appearAzimuth = this.getPointCoordsByDegress(maxAzimuth)
       const disappearAzimuth = this.getPointCoordsByDegress(minAzimuth)
