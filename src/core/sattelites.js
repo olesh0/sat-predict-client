@@ -8,6 +8,7 @@ import base64 from "base-64"
 
 import { shortEnglishHumanizer } from "./utils"
 
+import userLocation from "./location.json"
 import celestrak from "../../data/celestrack.json"
 
 const LOADED_FILES_PATH = "../data/cache/sats/"
@@ -203,7 +204,7 @@ export const predictPasses = ({
 
 export const getSatInfo = ({ sattelite, location }) => {
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
-  const qth = location || [48.522034, 25.036870, .1] // Location. For now defaulted to Ukraine, Kolomyia
+  const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
 
   const satInfo = jspredict.observe(tle, qth)
 

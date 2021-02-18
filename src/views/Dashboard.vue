@@ -36,6 +36,7 @@
 
         <app-map v-if="selectedSection === 'Map'" class="app-map" />
         <app-compass v-if="selectedSection === 'Compass'" class="app-map" />
+        <app-sun-and-moon v-if="selectedSection === 'Sun & Moon'" class="app-map" />
       </div>
     </div>
   </div>
@@ -49,11 +50,12 @@ import AppSelectedSattelite from '@/components/templates/dashboard/AppSelectedSa
 import AppPredictedPasses from '@/components/templates/dashboard/AppPredictedPasses.vue'
 import AppMap from '@/components/templates/dashboard/AppMap.vue'
 import AppCompass from '@/components/templates/dashboard/AppCompass.vue'
+import AppSunAndMoon from '@/components/templates/dashboard/AppSunAndMoon.vue'
 
 export default {
   data() {
     return {
-      sections: ['Map', 'Compass'],
+      sections: ['Map', 'Compass', 'Sun & Moon'],
       selectedSection: 'Map',
     }
   },
@@ -86,6 +88,7 @@ export default {
     AppSelectedSattelite,
     AppPredictedPasses,
     AppCompass,
+    AppSunAndMoon,
     AppMap,
   },
 }
@@ -137,7 +140,7 @@ export default {
       justify-content: flex-start;
 
       display: grid;
-      grid-template-columns: repeat(2, auto);
+      grid-template-columns: repeat(3, auto);
       grid-gap: 20px;
 
       margin-bottom: 5px;
