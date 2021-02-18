@@ -117,7 +117,6 @@ export default {
   watch: {
     timeItem() {
       this.calculateProgress()
-      console.log(this.timeItem)
     },
   },
   beforeDestroy() {

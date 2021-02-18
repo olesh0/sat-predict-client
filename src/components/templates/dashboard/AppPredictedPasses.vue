@@ -41,8 +41,6 @@ export default {
       this.selectedPass = index
     },
     setShowSelectSection() {
-      console.log('setshow', this.showSelectSection)
-
       store.commit('ui/setShowSelectSection', !this.showSelectSection)
     },
   },

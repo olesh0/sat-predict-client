@@ -78,11 +78,12 @@ export default {
       const {
         data: {
           sunTimes,
+          sunMaxElevation,
         },
       } = this
 
       return [
-        { label: 'Solar noon', value: moment(sunTimes.solarNoon).format(TIME_FORMAT) },
+        { label: 'Solar noon', value: `${moment(sunTimes.solarNoon).format(TIME_FORMAT)} / ${sunMaxElevation.toFixed(3)}°` },
         { label: 'Sunrise', value: moment(sunTimes.sunrise).format(TIME_FORMAT) },
         { label: 'Sunset', value: moment(sunTimes.sunset).format(TIME_FORMAT) },
         { label: 'Dawn', value: moment(sunTimes.dawn).format(TIME_FORMAT) },
@@ -157,7 +158,10 @@ export default {
       const sunrisePos = SunCalc.getPosition(times.sunrise, lat, long)
       const sunsetPos = SunCalc.getPosition(times.sunset, lat, long)
 
+      const sunMaxElevation = SunCalc.getPosition(new Date(times.solarNoon), lat, long)
+
       this.data = {
+        sunMaxElevation: this.radiansToDegress(sunMaxElevation.altitude),
         moonTimes: SunCalc.getMoonTimes(date, lat, long),
         moon: SunCalc.getMoonPosition(date, lat, long),
         moonIll: SunCalc.getMoonIllumination(date, lat, long),
@@ -171,6 +175,11 @@ export default {
     radiansToDegress(radians) {
       return radians * 180 / Math.PI
     },
+  },
+  beforeDestroy() {
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
   },
   created() {
     this.getRiseSetInfo()
