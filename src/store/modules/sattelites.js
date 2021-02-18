@@ -9,7 +9,7 @@ export default {
     passes: [],
     sattelite: {},
     category: null,
-    selectedPass: null,
+    selectedPass: {},
   },
 
   getters: {

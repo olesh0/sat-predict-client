@@ -1,73 +1,52 @@
 <template>
-  <div class="map-wrapper">
-    <div
-      class="sections-list"
-      :class="{
-        show: showSelectSection,
+  <div class="app-map">
+    <ejs-maps
+      id="maps"
+      :zoomSettings="{
+        enable: true,
+        toolbars: [],
+        pinchZooming: true,
       }"
+      :itemSelection="handleMapClick"
     >
-      <h1>Sattelite sections</h1>
+      <e-layers>
+        <e-layer
+          :shapeData="shapeData"
+          :scale="1"
+          :shapeSettings="shapeSettings"
+          :layerType="layerType"
+          :animationDuration="1500"
+        >
+          <e-markerSettings>
+            <e-markerSetting
+              :visible="true"
+              :template="satteliteMarkerContent"
+              :dataSource="[
+                { latitude: sattelite.latitude, longitude: sattelite.longitude },
+              ]"
+              :animationDuration="500"
+            ></e-markerSetting>
 
-      <div class="list">
-        <div
-          v-for="(section) in categories"
-          v-bind:key="section"
-          class="item"
-          @click="loadSection(section)"
-        >{{section}}</div>
-      </div>
-    </div>
-
-    <div class="app-map">
-      <ejs-maps
-        id="maps"
-        :zoomSettings="{
-          enable: true,
-          toolbars: [],
-          pinchZooming: true,
-        }"
-        :itemSelection="handleMapClick"
-      >
-        <e-layers>
-          <e-layer
-            :shapeData="shapeData"
-            :scale="1"
-            :shapeSettings="shapeSettings"
-            :layerType="layerType"
-            :animationDuration="1500"
-          >
-            <e-markerSettings>
-              <e-markerSetting
-                :visible="true"
-                :template="satteliteMarkerContent"
-                :dataSource="[
-                  { latitude: sattelite.latitude, longitude: sattelite.longitude },
-                ]"
-                :animationDuration="500"
-              ></e-markerSetting>
-
-              <e-markerSetting
-                :visible="true"
-                :template="userLocationMarkerContent"
-                :dataSource="[
-                  { latitude: 48.522640, longitude: 25.036758 },
-                ]"
-                :animationDuration="500"
-              ></e-markerSetting>
-            </e-markerSettings>
-          </e-layer>
-        </e-layers>
-      </ejs-maps>
-    </div>
+            <e-markerSetting
+              :visible="true"
+              :template="userLocationMarkerContent"
+              :dataSource="[
+                { latitude: 48.522640, longitude: 25.036758 },
+              ]"
+              :animationDuration="500"
+            ></e-markerSetting>
+          </e-markerSettings>
+        </e-layer>
+      </e-layers>
+    </ejs-maps>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { MapsPlugin, Marker, Zoom, Highlight, Selection } from '@syncfusion/ej2-vue-maps'
 
-import store from '@/store'
 import worldMap from '@/assets/world-map.json'
 
 Vue.use(MapsPlugin)
@@ -75,23 +54,12 @@ Vue.use(MapsPlugin)
 export default Vue.extend({
   computed: {
     ...mapGetters({
-      showSelectSection: 'ui/showSelectSection',
-      categories: 'sattelites/categories',
       sattelite: 'sattelites/sattelite',
     }),
   },
   methods: {
-    ...mapActions({
-      predictPassesForSection: 'sattelites/getPredictedPasses',
-    }),
     handleMapClick: (args) => {
       console.log(args)
-    },
-    async loadSection(sectionName) {
-      store.commit('sattelites/setCategory', sectionName, { root: true })
-      store.commit('ui/setShowSelectSection', false)
-
-      await this.predictPassesForSection(sectionName)
     },
   },
   data() {
@@ -138,101 +106,52 @@ export default Vue.extend({
 </script>
 
 <style lang="less">
-.map-wrapper {
-  position: relative;
+.app-map {
   height: 100%;
   width: 100%;
 
-  .sections-list {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 200;
-
-    width: 100%;
+  #maps {
+    display: block;
     height: 100%;
-    background: #242729;
-    padding: 2rem;
+    width: 100%;
 
-    opacity: 0;
-    visibility: hidden;
-
-    transform: scale(.8);
-    transition: all .2s;
-
-    &.show {
-      opacity: 1;
-      visibility: visible;
-      transform: scale(1);
+    &, * {
+      margin: 0;
+      padding: 0;
     }
+  }
+}
 
-    h1 {
-      margin: 0 0 5px;
-      font-weight: 100;
-      font-size: 2.2rem;
-    }
+.marker-template {
+  border-radius: 50%;
+  background: rgba(213, 34, 34, .2);
+  border: 2px solid rgba(213, 34, 34, .8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .list {
-      margin-top: 20px;
-      max-height: 77vh;
-      overflow: auto;
+  width: 70px;
+  height: 70px;
 
-      .item {
-        cursor: pointer;
-        margin-bottom: 10px;
-        color: #5F6D77;
+  transition: all 1s;
 
-        &:hover {
-          color: #eee;
-          text-decoration: underline;
-        }
-      }
+  &.user-location {
+    background: rgba(142, 34, 213, .2);
+    border-color: rgba(142, 34, 213, .8);
+
+    width: 55px;
+    height: 55px;
+
+    .pint {
+      background: #8E22D5;
     }
   }
 
-  .app-map {
-    height: 100%;
-    width: 100%;
-
-    #maps {
-      display: block;
-      height: 100%;
-      width: 100%;
-
-      background: #000;
-    }
-
-    .marker-template {
-      border-radius: 50%;
-      background: rgba(213, 34, 34, .2);
-      border: 2px solid rgba(213, 34, 34, .8);
-      display: flex;
-
-      width: 70px;
-      height: 70px;
-
-      transition: all 1s;
-
-      &.user-location {
-        background: rgba(142, 34, 213, .2);
-        border-color: rgba(142, 34, 213, .8);
-
-        width: 55px;
-        height: 55px;
-
-        .pint {
-          background: #8E22D5;
-        }
-      }
-
-      .point {
-        margin: auto;
-        width: 5px;
-        height: 5px;
-        background: rgba(213, 34, 34, 1);
-        border-radius: 4px;
-      }
-    }
+  .point {
+    width: 5px;
+    height: 5px;
+    background: rgba(213, 34, 34, 1);
+    border-radius: 4px;
   }
 }
 </style>

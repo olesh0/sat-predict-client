@@ -91,17 +91,18 @@ export default {
     dataSections() {
       return [
         [
-          { label: 'Max elevation', value: `${Math.round(this.pass.maxElevation || 0)}°` },
           { label: 'Current elevation', value: `${(this.observe.elevation || 0).toFixed(1)}°` },
+          { label: 'Current azimuth', value: `${(this.observe.azimuth || 0).toFixed(1)}°` },
           { label: 'Range', value: `${Math.round(this.observe.rangeSat || 0)}km` },
           { label: 'Latitude', value: (this.observe.latitude || 0).toFixed(6) },
           { label: 'Longitude', value: (this.observe.longitude || 0).toFixed(6) },
         ],
         [
+          { label: 'Max elevation', value: `${Math.round(this.pass.maxElevation || 0)}°` },
           { label: 'Start time', value: this.pass.start.formatted },
           { label: 'End time', value: this.pass.end.formatted },
-          { label: 'Altitude', value: `${Math.round(this.observe.altitude)}km` },
           { label: 'Pass duration', value: this.pass.duration.formatted },
+          { label: 'Altitude', value: `${Math.round(this.observe.altitude)}km` },
         ],
       ]
     },
@@ -116,6 +117,7 @@ export default {
   watch: {
     timeItem() {
       this.calculateProgress()
+      console.log(this.timeItem)
     },
   },
   beforeDestroy() {
