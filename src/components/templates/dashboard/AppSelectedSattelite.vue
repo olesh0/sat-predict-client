@@ -166,16 +166,21 @@ export default {
 
   .progress {
     width: 100%;
-    height: 0px;
+    height: 2px;
     border-radius: 10px;
     overflow: hidden;
     margin-top: 0px;
+
+    visibility: hidden;
+    opacity: 0;
 
     background: rgba(213, 34, 34, .2);
     transition: all 300ms;
 
     &.show {
-      height: 3px;
+      visibility: visible;
+      opacity: 1;
+
       margin-top: 10px;
     }
 
