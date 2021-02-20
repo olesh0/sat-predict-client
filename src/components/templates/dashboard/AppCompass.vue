@@ -37,9 +37,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as satellitejs from 'satellite.js'
-import userLocation from '@/core/location.json'
 
 export default {
   computed: {
@@ -56,6 +55,9 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      getUserLocation: 'coords/getUserLocation',
+    }),
     drawBasicCompass() {
       const { ctx, canvas } = this
 
@@ -103,6 +105,8 @@ export default {
     },
     getSatPosition({ firstRow, secondRow }, date) {
       const satrec = satellitejs.twoline2satrec(firstRow, secondRow)
+
+      const userLocation = this.getUserLocation()
 
       const gmst = satellitejs.gstime(date)
       const positionAndVelocity = satellitejs.propagate(satrec, date)

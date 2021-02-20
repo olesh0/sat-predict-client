@@ -38,10 +38,14 @@ export default {
   methods: {
     ...mapActions({
       observeSattelite: 'sattelites/observeSattelite',
+      getUserCoords: 'coords/getUserCoords',
     }),
     calculateProgress() {
       if (this.timeItem && this.timeItem.sattelite) {
-        this.observeSattelite(this.sattelite).then((data) => {
+        Promise.all([
+          this.observeSattelite(this.sattelite),
+          this.getUserCoords(),
+        ]).then(([data]) => {
           this.observe = data
         })
       }

@@ -1,4 +1,3 @@
-import { app } from "electron"
 import axios from "axios"
 import jspredict from "jspredict"
 import moment from "moment"
@@ -8,21 +7,15 @@ import path from "path"
 import base64 from "base-64"
 import fse from "fs-extra"
 
-import { shortEnglishHumanizer } from "./utils"
-
-import userLocation from "./location.json"
-import celestrak from "../data/celestrack.json"
-
-const documentsPath = app.getPath('documents')
-const AppFolderName = "Sat Predict"
-
-const LOADED_FILES_PATH = path.join(documentsPath, AppFolderName, "./data/cache/sats/")
-const PREDICTIONS_FILES_PATH = path.join(documentsPath, AppFolderName, "./data/cache/predictions/")
-
-console.log({
+import {
   LOADED_FILES_PATH,
   PREDICTIONS_FILES_PATH,
-})
+  getUserCoords,
+} from "./utils"
+
+import { shortEnglishHumanizer } from "./utils"
+
+import celestrak from "../data/celestrack.json"
 
 const TIME_FORMAT = "DD/MM/yyyy HH:mm:ss"
 const CACHE_LIFETIME = 3600 * 6 // 6 hours
@@ -222,7 +215,11 @@ export const predictPasses = ({
   }
 }
 
-export const getSatInfo = ({ sattelite, location }) => {
+export const getSatInfo = async ({ sattelite, location }) => {
+  const userLocation = await getUserCoords()
+
+  console.log(userLocation)
+
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
   const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
 

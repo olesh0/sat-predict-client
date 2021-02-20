@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { getSatsCategories, predictPassesOfSection, getSatInfo } from "./core/sattelites"
+import { getUserCoords, updateUserCoords } from "./core/utils"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -31,6 +32,22 @@ ipcMain.handle('observe-sattelite', async (event, sattelite) => {
   const data = await getSatInfo({ sattelite })
 
   return data
+})
+
+ipcMain.handle('update-user-coords', async (event, coords) => {
+  console.log('updating user coords...', coords)
+
+  const data = await updateUserCoords(coords)
+
+  return data
+})
+
+ipcMain.handle('get-user-coords', async () => {
+  console.log('getting user coords...')
+
+  const userCoords = await getUserCoords()
+
+  return userCoords
 })
 
 async function createWindow() {

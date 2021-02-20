@@ -19,6 +19,7 @@
         >
           <e-markerSettings>
             <e-markerSetting
+              v-if="sattelite && sattelite.latitude"
               :visible="true"
               :template="satteliteMarkerContent"
               :dataSource="[
@@ -31,7 +32,7 @@
               :visible="true"
               :template="userLocationMarkerContent"
               :dataSource="[
-                { latitude: 48.522640, longitude: 25.036758 },
+                { latitude: userLocation.lat, longitude: userLocation.lon },
               ]"
               :animationDuration="500"
             ></e-markerSetting>
@@ -55,6 +56,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       sattelite: 'sattelites/sattelite',
+      userLocation: 'coords/userLocation',
     }),
   },
   methods: {
