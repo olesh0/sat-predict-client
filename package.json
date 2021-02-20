@@ -26,6 +26,7 @@
     "base-64": "^1.0.0",
     "cache-loader": "^4.1.0",
     "fs": "^0.0.1-security",
+    "fs-extra": "^9.1.0",
     "humanize-duration": "^3.25.1",
     "jspredict": "^1.1.1",
     "less": "^3.0.4",

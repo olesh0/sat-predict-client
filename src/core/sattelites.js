@@ -1,3 +1,4 @@
+import { app } from "electron"
 import axios from "axios"
 import jspredict from "jspredict"
 import moment from "moment"
@@ -5,14 +6,23 @@ import bearing from "quadrant-bearing"
 import fs from "fs"
 import path from "path"
 import base64 from "base-64"
+import fse from "fs-extra"
 
 import { shortEnglishHumanizer } from "./utils"
 
 import userLocation from "./location.json"
-import celestrak from "../../data/celestrack.json"
+import celestrak from "../data/celestrack.json"
 
-const LOADED_FILES_PATH = "../data/cache/sats/"
-const PREDICTIONS_FILES_PATH = "../data/cache/predictions/"
+const documentsPath = app.getPath('documents')
+const AppFolderName = "Sat Predict"
+
+const LOADED_FILES_PATH = path.join(documentsPath, AppFolderName, "./data/cache/sats/")
+const PREDICTIONS_FILES_PATH = path.join(documentsPath, AppFolderName, "./data/cache/predictions/")
+
+console.log({
+  LOADED_FILES_PATH,
+  PREDICTIONS_FILES_PATH,
+})
 
 const TIME_FORMAT = "DD/MM/yyyy HH:mm:ss"
 const CACHE_LIFETIME = 3600 * 6 // 6 hours
@@ -31,7 +41,7 @@ export const getSatsList = async ({ section = null } = {}) => {
 
     const sectionInfo = celestrak.find(({ section: s }) => s === sectionName)
 
-    const cachePath = path.join(__dirname, LOADED_FILES_PATH, `${base64.encode(sectionName)}.cache.json`)
+    const cachePath = path.join(LOADED_FILES_PATH, `${base64.encode(sectionName)}.cache.json`)
 
     if (!fs.existsSync(cachePath)) {
       console.log("Creating cache for section:", sectionName)
@@ -71,14 +81,24 @@ export const getSatsList = async ({ section = null } = {}) => {
       },
     })
   } catch (e) {
-    console.log("Failed to fetch data from url...")
+    console.log(`Failed to fetch data from url... section=${section}`)
     console.error(e)
+
+    return Promise.resolve({
+      section: null,
+      sats: [],
+      cache: {
+        update: () => null,
+        isOutdated: true,
+        hasProblems: true,
+      }
+    })
   }
 }
 
-const calculatePasses = async ({ section, start, end }) => {
+const calculatePasses = async ({ section, start, end } = {}) => {
   const cacheFilename = `${base64.encode(section.section)}.prediction.cache.json`
-  const cacheFilePath = path.join(__dirname, PREDICTIONS_FILES_PATH, cacheFilename)
+  const cacheFilePath = path.join(PREDICTIONS_FILES_PATH, cacheFilename)
   const cacheExists = fs.existsSync(cacheFilePath)
 
   const recalculate = async () => {
@@ -104,7 +124,7 @@ const calculatePasses = async ({ section, start, end }) => {
     }
 
     // update/create cache
-    fs.writeFileSync(cacheFilePath, JSON.stringify({
+    fse.outputFileSync(cacheFilePath, JSON.stringify({
       data: recalculatedData,
       ...cacheTimingInfo,
     }, null, 2))
@@ -217,16 +237,18 @@ export const getSatsCategories = () => celestrak.map(({ section }) => section)
 const updateCache = async ({ cachePath, url }) => {
   console.log(`Updating cache... ${cachePath}`)
 
-  const { data } = await axios.get(url, { timeout: 10000 })
-
   try {
-    fs.writeFileSync(cachePath, JSON.stringify({
+    const { data } = await axios.get(url, { timeout: 10000 })
+
+    fse.outputFileSync(cachePath, JSON.stringify({
       created: Date.now(),
       data: base64.encode(data),
     }, null, 2), { flag: "w+" })
 
     return Promise.resolve()
   } catch (e) {
+    console.error(e)
+
     return Promise.reject(e)
   }
 }
@@ -241,7 +263,7 @@ export const fetchFullData = async () => {
   const cachePromises = celestrak.map(async ({ section, url }) => {
     try {
       const cacheFilename = `${base64.encode(section)}.cache.json`
-      const cacheFilePath = path.join(__dirname, LOADED_FILES_PATH, cacheFilename)
+      const cacheFilePath = path.join(LOADED_FILES_PATH, cacheFilename)
       const cacheExists = fs.existsSync(cacheFilePath)
 
       if (!cacheExists) {
@@ -280,7 +302,7 @@ export const fetchFullData = async () => {
 
   const timeEnd = Date.now()
   const cacheGatherTime = (timeEnd - timeStart) / 1000
-  const cacheFileInfoPath = path.join(__dirname, "../data/cache.json")
+  const cacheFileInfoPath = path.join(LOADED_FILES_PATH, "./cache.json")
 
   fs.writeFileSync(cacheFileInfoPath, JSON.stringify({
     lastUpdated: Date.now(),
