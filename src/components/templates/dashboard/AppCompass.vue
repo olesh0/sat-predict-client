@@ -38,6 +38,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import * as satellitejs from 'satellite.js'
+import userLocation from '@/core/location.json'
 
 export default {
   computed: {
@@ -99,21 +101,45 @@ export default {
       ctx.arc(centerX, centerY, countDegressPercentage(90), 0, 2 * Math.PI)
       ctx.stroke()
     },
+    getSatPosition({ firstRow, secondRow }, date) {
+      const satrec = satellitejs.twoline2satrec(firstRow, secondRow)
+
+      const gmst = satellitejs.gstime(date)
+      const positionAndVelocity = satellitejs.propagate(satrec, date)
+
+      const positionEci = positionAndVelocity.position
+      const observerGd = {
+        longitude: satellitejs.degreesToRadians(userLocation.lon),
+        latitude: satellitejs.degreesToRadians(userLocation.lat),
+        height: 0.370
+      }
+      const positionEcf = satellitejs.eciToEcf(positionEci, gmst)
+      const lookAngles = satellitejs.ecfToLookAngles(observerGd, positionEcf)
+
+      return lookAngles
+    },
     drawPassPath() {
       const {
         pass: {
-          maxAzimuth: { degress: maxAzimuth }, // appears at
-          minAzimuth: { degress: minAzimuth }, // disappears at
           apexAzimuth: { degress: apexAzimuth }, // direction of elevation?
           maxElevation,
+          start,
+          end,
         },
+        sattelite,
       } = this.timeItem
+
+      const passStartPosition = this.getSatPosition(sattelite, new Date(start.timestamp))
+      const passEndPosition = this.getSatPosition(sattelite, new Date(end.timestamp))
+
+      const passStartAzimuthDegress = passStartPosition.azimuth * (180 / Math.PI)
+      const passEndAzimuthDegress = passEndPosition.azimuth * (180 / Math.PI)
 
       const centerX = this.canvas.clientWidth / 2
       const customApexAzimuthCoordRadius = centerX - ((centerX / 100) * maxElevation)
 
-      const appearAzimuth = this.getPointCoordsByDegress(maxAzimuth)
-      const disappearAzimuth = this.getPointCoordsByDegress(minAzimuth)
+      const appearAzimuth = this.getPointCoordsByDegress(passStartAzimuthDegress)
+      const disappearAzimuth = this.getPointCoordsByDegress(passEndAzimuthDegress)
       const apexAzimuthCoord = this.getPointCoordsByDegress(apexAzimuth, customApexAzimuthCoordRadius)
 
       this.ctx.moveTo(appearAzimuth.x, appearAzimuth.y)
@@ -143,7 +169,7 @@ export default {
         centerX,
         centerY,
         degress - 90,
-        customRadius || centerX
+        customRadius || centerX,
       )
 
       return { x, y, section }
