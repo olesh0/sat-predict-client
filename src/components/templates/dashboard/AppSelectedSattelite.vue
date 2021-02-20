@@ -102,7 +102,7 @@ export default {
           { label: 'Start time', value: this.pass.start.formatted },
           { label: 'End time', value: this.pass.end.formatted },
           { label: 'Pass duration', value: this.pass.duration.formatted },
-          { label: 'Altitude', value: `${Math.round(this.observe.altitude)}km` },
+          { label: 'Altitude', value: this.observe.altitude ? `${Math.round(this.observe.altitude)}km` : '-' },
         ],
       ]
     },

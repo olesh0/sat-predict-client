@@ -78,6 +78,7 @@ export default {
     },
   },
   async created() {
+    document.title = "Satellite predictor"
     const categories = await this.getCategories()
 
     store.commit('sattelites/setCategory', categories[0], { root: true })
