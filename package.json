@@ -1,8 +1,8 @@
 {
   "name": "sat-predict-client",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
-  "description": "A Vue.js project",
+  "description": "An app that predicts location for satellites for your geolocation, shows you where is moon & sun for your location",
   "author": "olesh <olegkirashchuk@gmail.com>",
   "scripts": {
     "build": "node build/build.js",
