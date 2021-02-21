@@ -79,7 +79,6 @@ export default {
 
         this.latitude = lat
         this.longtitude = lon
-        this.autoFetchedLocation = null
       }
     },
   },
