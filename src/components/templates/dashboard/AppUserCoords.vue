@@ -72,16 +72,6 @@ export default {
       userLocation: 'coords/userLocation',
     }),
   },
-  watch: {
-    userLocation() {
-      if (this.userLocation && this.userLocation.lat) {
-        const { lat, lon } = this.userLocation
-
-        this.latitude = lat
-        this.longtitude = lon
-      }
-    },
-  },
   methods: {
     ...mapActions({
       updateUserCoords: 'coords/updateUserCoords',
@@ -120,6 +110,9 @@ export default {
         this.updated = true
         this.coordsFetchText = 'All set.'
 
+        this.latitude = location.latitude
+        this.longtitude = location.longitude
+
         setTimeout(() => {
           this.updated = false
         }, 1000)
@@ -145,8 +138,15 @@ export default {
       }, 1000)
     },
   },
-  created() {
-    this.getUserCoords()
+  async created() {
+    await this.getUserCoords()
+
+    if (!this.userLocation) return
+
+    const { lat, lon } = this.userLocation
+
+    this.latitude = lat
+    this.longtitude = lon
   },
   name: 'app-user-coords',
 }
