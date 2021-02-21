@@ -44,6 +44,11 @@ export default {
       store.commit('ui/setShowSelectSection', !this.showSelectSection)
     },
   },
+  watch: {
+    passes() {
+      this.selectedPass = null
+    }
+  },
   computed: {
     ...mapGetters({
       category: 'sattelites/category',

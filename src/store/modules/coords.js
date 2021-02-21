@@ -21,6 +21,8 @@ export default {
     async updateUserCoords({ rootGetters, dispatch, commit }, coords) {
       const coordsUpdate = await ipcRenderer.invoke('update-user-coords', coords)
 
+      if (!coordsUpdate) return
+
       await dispatch(
         'sattelites/getPredictedPasses',
         { section: rootGetters['sattelites/category'], force: true },
