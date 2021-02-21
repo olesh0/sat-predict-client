@@ -1,16 +1,15 @@
-import fse from "fs-extra"
-import path from "path"
+import axios from 'axios'
+import fse from 'fs-extra'
+import path from 'path'
 
 import { APP_DATA_PATH } from "./paths"
 
 export const USER_LOCATION_PATH = path.join(APP_DATA_PATH, "./user-geolocation.json")
 
-console.log(USER_LOCATION_PATH)
+console.log({ USER_LOCATION_PATH })
 
 export const updateUserCoords = ({ lat, lon }) => {
   const data = JSON.stringify({ lat, lon })
-
-  console.log(data, USER_LOCATION_PATH)
 
   fse.outputFileSync(USER_LOCATION_PATH, data, { flag: "w+" })
 
@@ -33,12 +32,24 @@ export const getUserCoords = async () => {
     const userLocationRaw = Buffer.from(fileBuffer).toString()
     const parsedLocation = JSON.parse(userLocationRaw)
 
-    console.log("USER LOCATION: ", parsedLocation)
-
     return Promise.resolve(parsedLocation)
   } catch (e) {
     console.error(e)
 
     return Promise.resolve(defaultLocation)
+  }
+}
+
+export const getUserLocation = async () => {
+  try {
+    const { data: userIp } = await axios.get('https://api.ipify.org/')
+    const { data: userLocation } = await axios.get(`https://ipapi.co/${userIp}/json/`)
+
+    return Promise.resolve({
+      location: userLocation,
+      ip: userIp,
+    })
+  } catch (e) {
+    return Promise.resolve(null)
   }
 }

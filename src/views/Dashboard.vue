@@ -71,12 +71,13 @@ export default {
     ...mapActions({
       getCategories: 'sattelites/getCategories',
       predictPassesForSection: 'sattelites/getPredictedPasses',
+      getUserLocation: 'coords/getUserCoords',
     }),
     async loadSection(sectionName) {
       store.commit('sattelites/setCategory', sectionName, { root: true })
       store.commit('ui/setShowSelectSection', false)
 
-      await this.predictPassesForSection(sectionName)
+      await this.predictPassesForSection({ section: sectionName })
     },
   },
   async created() {
@@ -85,7 +86,8 @@ export default {
 
     store.commit('sattelites/setCategory', categories[0], { root: true })
 
-    await this.predictPassesForSection(categories[0])
+    await this.predictPassesForSection({ section: categories[0] })
+    await this.getUserLocation()
   },
   components: {
     AppSelectedSattelite,

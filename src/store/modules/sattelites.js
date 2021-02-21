@@ -65,8 +65,8 @@ export default {
 
       return Promise.resolve(sortedList)
     },
-    async getPredictedPasses({ commit }, sectionName) {
-      const data = await ipcRenderer.invoke('get-predicted-passes', sectionName)
+    async getPredictedPasses({ commit }, { section, force = false }) {
+      const data = await ipcRenderer.invoke('get-predicted-passes', { section, force })
       const currentTime = Date.now()
 
       if (data.error) {

@@ -19,8 +19,7 @@
         >
           <e-markerSettings>
             <e-markerSetting
-              v-if="sattelite && sattelite.latitude"
-              :visible="true"
+              :visible="sattelite && sattelite.latitude"
               :template="satteliteMarkerContent"
               :dataSource="[
                 { latitude: sattelite.latitude, longitude: sattelite.longitude },
@@ -29,7 +28,7 @@
             ></e-markerSetting>
 
             <e-markerSetting
-              :visible="true"
+              :visible="userLocation && userLocation.lat && userLocation.lon"
               :template="userLocationMarkerContent"
               :dataSource="[
                 { latitude: userLocation.lat, longitude: userLocation.lon },

@@ -89,7 +89,7 @@ export const getSatsList = async ({ section = null } = {}) => {
   }
 }
 
-const calculatePasses = async ({ section, start, end } = {}) => {
+const calculatePasses = async ({ section, start, end, force } = {}) => {
   const cacheFilename = `${base64.encode(section.section)}.prediction.cache.json`
   const cacheFilePath = path.join(PREDICTIONS_FILES_PATH, cacheFilename)
   const cacheExists = fs.existsSync(cacheFilePath)
@@ -130,7 +130,7 @@ const calculatePasses = async ({ section, start, end } = {}) => {
 
   let data
 
-  if (cacheExists) {
+  if (cacheExists && !force) {
     const cacheBuffer = fs.readFileSync(cacheFilePath)
     const cacheContent = Buffer.from(cacheBuffer).toString()
     const { data: passes, end, ...rest } = JSON.parse(cacheContent)
@@ -155,22 +155,24 @@ const calculatePasses = async ({ section, start, end } = {}) => {
   return Promise.resolve(data)
 }
 
-export const predictPassesOfSection = async ({ section, start = null, end = null }) => {
+export const predictPassesOfSection = async ({ section, force, start = null, end = null }) => {
   const sectionInfo = await getSatsList({ section })
-  const data = await calculatePasses({ section: sectionInfo, start, end })
+  const data = await calculatePasses({ section: sectionInfo, start, end, force })
 
   return Promise.resolve(data)
 }
 
-export const predictPasses = ({
+export const predictPasses = async ({
   sattelite,
   start = null,
   end = null,
   minimumElevation = 10,
   location = null,
 }) => {
+  const userLocation = await getUserCoords()
+
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
-  const qth = location || [48.522034, 25.036870, .1] // Location. For now defaulted to Ukraine, Kolomyia
+  const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
 
   const passStart = start || defaultPassesWindowStart()
   const passEnd = end || defaultPassesWindowEnd()
@@ -217,8 +219,6 @@ export const predictPasses = ({
 
 export const getSatInfo = async ({ sattelite, location }) => {
   const userLocation = await getUserCoords()
-
-  console.log(userLocation)
 
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
   const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
