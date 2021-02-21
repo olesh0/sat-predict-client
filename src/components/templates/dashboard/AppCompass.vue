@@ -37,9 +37,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as satellitejs from 'satellite.js'
-import userLocation from '@/core/location.json'
 
 export default {
   computed: {
@@ -56,6 +55,9 @@ export default {
     }),
   },
   methods: {
+    ...mapActions({
+      getUserLocation: 'coords/getUserCoords',
+    }),
     drawBasicCompass() {
       const { ctx, canvas } = this
 
@@ -101,8 +103,10 @@ export default {
       ctx.arc(centerX, centerY, countDegressPercentage(90), 0, 2 * Math.PI)
       ctx.stroke()
     },
-    getSatPosition({ firstRow, secondRow }, date) {
+    async getSatPosition({ firstRow, secondRow }, date) {
       const satrec = satellitejs.twoline2satrec(firstRow, secondRow)
+
+      const userLocation = await this.getUserLocation()
 
       const gmst = satellitejs.gstime(date)
       const positionAndVelocity = satellitejs.propagate(satrec, date)
@@ -118,7 +122,7 @@ export default {
 
       return lookAngles
     },
-    drawPassPath() {
+    async drawPassPath() {
       const {
         pass: {
           apexAzimuth: { degress: apexAzimuth }, // direction of elevation?
@@ -129,8 +133,8 @@ export default {
         sattelite,
       } = this.timeItem
 
-      const passStartPosition = this.getSatPosition(sattelite, new Date(start.timestamp))
-      const passEndPosition = this.getSatPosition(sattelite, new Date(end.timestamp))
+      const passStartPosition = await this.getSatPosition(sattelite, new Date(start.timestamp))
+      const passEndPosition = await this.getSatPosition(sattelite, new Date(end.timestamp))
 
       const passStartAzimuthDegress = passStartPosition.azimuth * (180 / Math.PI)
       const passEndAzimuthDegress = passEndPosition.azimuth * (180 / Math.PI)

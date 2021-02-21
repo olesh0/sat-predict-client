@@ -37,6 +37,7 @@
         <app-map v-if="selectedSection === 'Map'" class="app-map" />
         <app-compass v-if="selectedSection === 'Compass'" class="app-map" />
         <app-sun-and-moon v-if="selectedSection === 'Sun & Moon'" class="app-map" />
+        <app-user-coords v-if="selectedSection === 'Coords'" class="app-map" />
       </div>
     </div>
   </div>
@@ -51,11 +52,12 @@ import AppPredictedPasses from '@/components/templates/dashboard/AppPredictedPas
 import AppMap from '@/components/templates/dashboard/AppMap.vue'
 import AppCompass from '@/components/templates/dashboard/AppCompass.vue'
 import AppSunAndMoon from '@/components/templates/dashboard/AppSunAndMoon.vue'
+import AppUserCoords from '@/components/templates/dashboard/AppUserCoords.vue'
 
 export default {
   data() {
     return {
-      sections: ['Map', 'Compass', 'Sun & Moon'],
+      sections: ['Map', 'Compass', 'Sun & Moon', 'Coords'],
       selectedSection: 'Map',
     }
   },
@@ -69,26 +71,30 @@ export default {
     ...mapActions({
       getCategories: 'sattelites/getCategories',
       predictPassesForSection: 'sattelites/getPredictedPasses',
+      getUserLocation: 'coords/getUserCoords',
     }),
     async loadSection(sectionName) {
       store.commit('sattelites/setCategory', sectionName, { root: true })
       store.commit('ui/setShowSelectSection', false)
 
-      await this.predictPassesForSection(sectionName)
+      await this.predictPassesForSection({ section: sectionName })
     },
   },
   async created() {
+    document.title = "Satellite predictor"
     const categories = await this.getCategories()
 
     store.commit('sattelites/setCategory', categories[0], { root: true })
 
-    await this.predictPassesForSection(categories[0])
+    await this.predictPassesForSection({ section: categories[0] })
+    await this.getUserLocation()
   },
   components: {
     AppSelectedSattelite,
     AppPredictedPasses,
     AppCompass,
     AppSunAndMoon,
+    AppUserCoords,
     AppMap,
   },
 }
@@ -138,9 +144,10 @@ export default {
       padding: 10px;
       background: #242729;
       justify-content: flex-start;
+      font-size: 1.1rem;
 
       display: grid;
-      grid-template-columns: repeat(3, auto);
+      grid-template-columns: repeat(4, auto);
       grid-gap: 20px;
 
       margin-bottom: 5px;

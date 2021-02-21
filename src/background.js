@@ -1,8 +1,7 @@
-
-
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { getSatsCategories, predictPassesOfSection, getSatInfo } from "./core/sattelites"
+import { getUserCoords, updateUserCoords, getUserLocation } from "./core/utils"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -17,12 +16,24 @@ ipcMain.handle('get-categories', async () => {
   return satsList
 })
 
-ipcMain.handle('get-predicted-passes', async (event, sectionName) => {
-  console.log('getting passes of', sectionName)
+ipcMain.handle('get-predicted-passes', async (_, { section, force }) => {
+  console.log(`getting passes of ${section} / force=${force}`)
 
-  const passes = await predictPassesOfSection({ section: sectionName })
+  const passes = await predictPassesOfSection({ section, force })
 
   return passes
+})
+
+ipcMain.handle('get-user-location', async () => {
+  try {
+    const userLocation = await getUserLocation()
+
+    return userLocation
+  } catch (e) {
+    console.error(e)
+
+    return null
+  }
 })
 
 ipcMain.handle('observe-sattelite', async (event, sattelite) => {
@@ -31,6 +42,20 @@ ipcMain.handle('observe-sattelite', async (event, sattelite) => {
   const data = await getSatInfo({ sattelite })
 
   return data
+})
+
+ipcMain.handle('update-user-coords', async (event, coords) => {
+  console.log('updating user coords...', coords)
+
+  const data = await updateUserCoords(coords)
+
+  return data
+})
+
+ipcMain.handle('get-user-coords', async () => {
+  const userCoords = await getUserCoords()
+
+  return userCoords
 })
 
 async function createWindow() {

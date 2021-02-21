@@ -56,9 +56,9 @@ import SunCalc from 'suncalc'
 import _normalizeBearing from 'quadrant-bearing'
 import moment from 'moment'
 
-import { lat, lon as long } from '@/core/location.json'
 import Moon from '@/assets/icons/Moon.vue'
 import Sun from '@/assets/icons/Sun.vue'
+import { mapActions } from 'vuex'
 
 const TIME_FORMAT = "DD/MM HH:mm:ss A"
 
@@ -146,11 +146,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      getUserCoords: 'coords/getUserCoords',
+    }),
     normalizeBearing: _normalizeBearing,
     normalizeNumber(number) {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     },
-    getRiseSetInfo() {
+    async getRiseSetInfo() {
+      const { lat, lon: long } = await this.getUserCoords()
       const date = new Date()
 
       const times = SunCalc.getTimes(date, lat, long)

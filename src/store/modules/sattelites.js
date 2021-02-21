@@ -1,4 +1,3 @@
-import { isCustomPath } from '@syncfusion/ej2-vue-maps'
 import { ipcRenderer } from 'electron'
 
 export default {
@@ -42,6 +41,12 @@ export default {
     async observeSattelite({ commit }, sattelite) {
       const data = await ipcRenderer.invoke('observe-sattelite', sattelite)
 
+      if (data.error) {
+        console.error(data.error)
+
+        return Promise.resolve([])
+      }
+
       commit('setSattelite', data)
 
       return Promise.resolve(data)
@@ -50,13 +55,27 @@ export default {
       const list = await ipcRenderer.invoke('get-categories')
       const sortedList = list.sort()
 
+      if (list.error) {
+        console.error(data.error)
+
+        return Promise.resolve([])
+      }
+
       commit('setCategories', sortedList)
 
       return Promise.resolve(sortedList)
     },
-    async getPredictedPasses({ commit }, sectionName) {
-      const { passes: passesRaw } = await ipcRenderer.invoke('get-predicted-passes', sectionName)
+    async getPredictedPasses({ commit }, { section, force = false }) {
+      const data = await ipcRenderer.invoke('get-predicted-passes', { section, force })
       const currentTime = Date.now()
+
+      if (data.error) {
+        console.error(data.error)
+
+        return Promise.resolve([])
+      }
+
+      const { passes: passesRaw } = data
 
       const inProgress = (pass) => {
         return Date.now() > pass.start.timestamp && Date.now() < pass.end.timestamp

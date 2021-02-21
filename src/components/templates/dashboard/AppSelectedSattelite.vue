@@ -38,10 +38,14 @@ export default {
   methods: {
     ...mapActions({
       observeSattelite: 'sattelites/observeSattelite',
+      getUserCoords: 'coords/getUserCoords',
     }),
     calculateProgress() {
       if (this.timeItem && this.timeItem.sattelite) {
-        this.observeSattelite(this.sattelite).then((data) => {
+        Promise.all([
+          this.observeSattelite(this.sattelite),
+          this.getUserCoords(),
+        ]).then(([data]) => {
           this.observe = data
         })
       }
@@ -102,7 +106,7 @@ export default {
           { label: 'Start time', value: this.pass.start.formatted },
           { label: 'End time', value: this.pass.end.formatted },
           { label: 'Pass duration', value: this.pass.duration.formatted },
-          { label: 'Altitude', value: `${Math.round(this.observe.altitude)}km` },
+          { label: 'Altitude', value: this.observe.altitude ? `${Math.round(this.observe.altitude)}km` : '-' },
         ],
       ]
     },

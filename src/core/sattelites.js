@@ -5,14 +5,17 @@ import bearing from "quadrant-bearing"
 import fs from "fs"
 import path from "path"
 import base64 from "base-64"
+import fse from "fs-extra"
+
+import {
+  LOADED_FILES_PATH,
+  PREDICTIONS_FILES_PATH,
+  getUserCoords,
+} from "./utils"
 
 import { shortEnglishHumanizer } from "./utils"
 
-import userLocation from "./location.json"
-import celestrak from "../../data/celestrack.json"
-
-const LOADED_FILES_PATH = "../data/cache/sats/"
-const PREDICTIONS_FILES_PATH = "../data/cache/predictions/"
+import celestrak from "../data/celestrack.json"
 
 const TIME_FORMAT = "DD/MM/yyyy HH:mm:ss"
 const CACHE_LIFETIME = 3600 * 6 // 6 hours
@@ -31,7 +34,7 @@ export const getSatsList = async ({ section = null } = {}) => {
 
     const sectionInfo = celestrak.find(({ section: s }) => s === sectionName)
 
-    const cachePath = path.join(__dirname, LOADED_FILES_PATH, `${base64.encode(sectionName)}.cache.json`)
+    const cachePath = path.join(LOADED_FILES_PATH, `${base64.encode(sectionName)}.cache.json`)
 
     if (!fs.existsSync(cachePath)) {
       console.log("Creating cache for section:", sectionName)
@@ -71,14 +74,24 @@ export const getSatsList = async ({ section = null } = {}) => {
       },
     })
   } catch (e) {
-    console.log("Failed to fetch data from url...")
+    console.log(`Failed to fetch data from url... section=${section}`)
     console.error(e)
+
+    return Promise.resolve({
+      section: null,
+      sats: [],
+      cache: {
+        update: () => null,
+        isOutdated: true,
+        hasProblems: true,
+      }
+    })
   }
 }
 
-const calculatePasses = async ({ section, start, end }) => {
+const calculatePasses = async ({ section, start, end, force } = {}) => {
   const cacheFilename = `${base64.encode(section.section)}.prediction.cache.json`
-  const cacheFilePath = path.join(__dirname, PREDICTIONS_FILES_PATH, cacheFilename)
+  const cacheFilePath = path.join(PREDICTIONS_FILES_PATH, cacheFilename)
   const cacheExists = fs.existsSync(cacheFilePath)
 
   const recalculate = async () => {
@@ -104,7 +117,7 @@ const calculatePasses = async ({ section, start, end }) => {
     }
 
     // update/create cache
-    fs.writeFileSync(cacheFilePath, JSON.stringify({
+    fse.outputFileSync(cacheFilePath, JSON.stringify({
       data: recalculatedData,
       ...cacheTimingInfo,
     }, null, 2))
@@ -117,7 +130,7 @@ const calculatePasses = async ({ section, start, end }) => {
 
   let data
 
-  if (cacheExists) {
+  if (cacheExists && !force) {
     const cacheBuffer = fs.readFileSync(cacheFilePath)
     const cacheContent = Buffer.from(cacheBuffer).toString()
     const { data: passes, end, ...rest } = JSON.parse(cacheContent)
@@ -142,22 +155,24 @@ const calculatePasses = async ({ section, start, end }) => {
   return Promise.resolve(data)
 }
 
-export const predictPassesOfSection = async ({ section, start = null, end = null }) => {
+export const predictPassesOfSection = async ({ section, force, start = null, end = null }) => {
   const sectionInfo = await getSatsList({ section })
-  const data = await calculatePasses({ section: sectionInfo, start, end })
+  const data = await calculatePasses({ section: sectionInfo, start, end, force })
 
   return Promise.resolve(data)
 }
 
-export const predictPasses = ({
+export const predictPasses = async ({
   sattelite,
   start = null,
   end = null,
   minimumElevation = 10,
   location = null,
 }) => {
+  const userLocation = await getUserCoords()
+
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
-  const qth = location || [48.522034, 25.036870, .1] // Location. For now defaulted to Ukraine, Kolomyia
+  const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
 
   const passStart = start || defaultPassesWindowStart()
   const passEnd = end || defaultPassesWindowEnd()
@@ -202,7 +217,9 @@ export const predictPasses = ({
   }
 }
 
-export const getSatInfo = ({ sattelite, location }) => {
+export const getSatInfo = async ({ sattelite, location }) => {
+  const userLocation = await getUserCoords()
+
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
   const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
 
@@ -217,16 +234,18 @@ export const getSatsCategories = () => celestrak.map(({ section }) => section)
 const updateCache = async ({ cachePath, url }) => {
   console.log(`Updating cache... ${cachePath}`)
 
-  const { data } = await axios.get(url, { timeout: 10000 })
-
   try {
-    fs.writeFileSync(cachePath, JSON.stringify({
+    const { data } = await axios.get(url, { timeout: 10000 })
+
+    fse.outputFileSync(cachePath, JSON.stringify({
       created: Date.now(),
       data: base64.encode(data),
     }, null, 2), { flag: "w+" })
 
     return Promise.resolve()
   } catch (e) {
+    console.error(e)
+
     return Promise.reject(e)
   }
 }
@@ -241,7 +260,7 @@ export const fetchFullData = async () => {
   const cachePromises = celestrak.map(async ({ section, url }) => {
     try {
       const cacheFilename = `${base64.encode(section)}.cache.json`
-      const cacheFilePath = path.join(__dirname, LOADED_FILES_PATH, cacheFilename)
+      const cacheFilePath = path.join(LOADED_FILES_PATH, cacheFilename)
       const cacheExists = fs.existsSync(cacheFilePath)
 
       if (!cacheExists) {
@@ -280,7 +299,7 @@ export const fetchFullData = async () => {
 
   const timeEnd = Date.now()
   const cacheGatherTime = (timeEnd - timeStart) / 1000
-  const cacheFileInfoPath = path.join(__dirname, "../data/cache.json")
+  const cacheFileInfoPath = path.join(LOADED_FILES_PATH, "./cache.json")
 
   fs.writeFileSync(cacheFileInfoPath, JSON.stringify({
     lastUpdated: Date.now(),
