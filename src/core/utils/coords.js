@@ -38,7 +38,10 @@ export const getUserCoords = async () => {
   } catch (e) {
     console.error(e)
 
-    return Promise.resolve(defaultLocation)
+    return Promise.resolve({
+      ...defaultLocation,
+      isDefault: true,
+    })
   }
 }
 

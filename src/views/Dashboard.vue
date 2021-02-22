@@ -74,13 +74,19 @@ export default {
       getUserLocation: 'coords/getUserCoords',
     }),
     async loadSection(sectionName) {
+      store.commit('ui/setShowPreloader', true)
+
       store.commit('sattelites/setCategory', sectionName, { root: true })
       store.commit('ui/setShowSelectSection', false)
 
       await this.predictPassesForSection({ section: sectionName })
+
+      store.commit('ui/setShowPreloader', false)
     },
   },
   async created() {
+    store.commit('ui/setShowPreloader', true)
+
     document.title = "Satellite predictor"
     const categories = await this.getCategories()
 
@@ -88,6 +94,8 @@ export default {
 
     await this.predictPassesForSection({ section: categories[0] })
     await this.getUserLocation()
+
+    store.commit('ui/setShowPreloader', false)
   },
   components: {
     AppSelectedSattelite,
