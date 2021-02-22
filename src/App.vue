@@ -1,12 +1,19 @@
 <template>
   <div id="app">
     <router-view/>
+
+    <app-preloader />
   </div>
 </template>
 
 <script>
+import AppPreloader from '@/components/ui/AppPreloader.vue'
+
 export default {
-  name: 'App',
+  name: 'app',
+  components: {
+    AppPreloader,
+  },
 }
 </script>
 

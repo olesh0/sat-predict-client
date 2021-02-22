@@ -57,6 +57,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import { ipcRenderer } from 'electron'
 
+import store from '@/store'
+
 export default {
   data() {
     return {
@@ -99,6 +101,8 @@ export default {
     },
     async autoFetchCoords() {
       try {
+        store.commit('ui/setShowPreloader', true)
+
         const { location } = await ipcRenderer.invoke('get-user-location')
 
         await this.updateUserCoords({
@@ -120,9 +124,13 @@ export default {
         console.error(e)
 
         this.coordsFetchText = 'Failed to auto-fetch the coords...'
+      } finally {
+        store.commit('ui/setShowPreloader', false)
       }
     },
     async updateCoords() {
+      store.commit('ui/setShowPreloader', true)
+
       const {
         latitude: lat,
         longtitude: lon,
@@ -132,6 +140,8 @@ export default {
 
       await this.updateUserCoords({ lat, lon })
       this.updated = true
+
+      store.commit('ui/setShowPreloader', false)
 
       setTimeout(() => {
         this.updated = false
