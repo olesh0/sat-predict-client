@@ -8,10 +8,10 @@ export const USER_LOCATION_PATH = path.join(APP_DATA_PATH, "./user-geolocation.j
 
 console.log({ USER_LOCATION_PATH })
 
-export const updateUserCoords = ({ lat, lon }) => {
+export const updateUserCoords = ({ lat, lon, ...rest }) => {
   if (!lat || !lon) return null
 
-  const data = JSON.stringify({ lat, lon })
+  const data = JSON.stringify({ lat, lon, ...rest })
 
   fse.outputFileSync(USER_LOCATION_PATH, data, { flag: "w+" })
 
@@ -47,14 +47,18 @@ export const getUserCoords = async () => {
 
 export const getUserLocation = async () => {
   try {
-    const { data: userIp } = await axios.get('https://api.ipify.org/')
-    const { data: userLocation } = await axios.get(`https://ipapi.co/${userIp}/json/`)
+    const queryOptions = { timeout: 5000 }
+
+    const { data: userIp } = await axios.get('https://api.ipify.org/', queryOptions)
+    const { data: userLocation } = await axios.get(`https://ipapi.co/${userIp}/json/`, queryOptions)
 
     return Promise.resolve({
       location: userLocation,
       ip: userIp,
     })
   } catch (e) {
+    console.error(e.response)
+
     return Promise.resolve(null)
   }
 }

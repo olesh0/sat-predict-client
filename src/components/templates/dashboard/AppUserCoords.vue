@@ -28,7 +28,23 @@
       v-if="autoFetchedLocation"
       class="auto-fetched-location-info"
     >
-      Auto fetched location: <span>{{autoFetchedLocation.country_name}}, {{autoFetchedLocation.city}}</span>
+      Auto fetched location:
+      <span>
+        {{autoFetchedLocation.country_name}},
+        {{autoFetchedLocation.city}}
+      </span>
+    </div>
+
+    <div
+      v-else-if="userLocation"
+      class="auto-fetched-location-info"
+    >
+      Your current location:
+      <span>
+        {{userLocation.continentCode}},
+        {{userLocation.countryName}},
+        {{userLocation.city}}
+      </span>
     </div>
 
     <div class="actions">
@@ -103,9 +119,27 @@ export default {
       try {
         store.commit('ui/setShowPreloader', true)
 
-        const { location } = await ipcRenderer.invoke('get-user-location')
+        const { location } = await ipcRenderer.invoke('get-user-location') || {}
+
+        if (!location) {
+          this.coordsFetchText = 'Failed to auto-fetch the coords...'
+
+          return
+        }
+
+        const additional = {
+          country: location.country_code,
+          city: location.city,
+          ip: location.ip,
+          timezone: location.timezone,
+          languages: location.languages,
+          countryName: location.country_name,
+          continentCode: location.continent_code,
+          utcOffset: location.utc_offset,
+        }
 
         await this.updateUserCoords({
+          ...additional,
           lat: location.latitude,
           lon: location.longitude,
         })
