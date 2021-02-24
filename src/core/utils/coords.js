@@ -8,10 +8,10 @@ export const USER_LOCATION_PATH = path.join(APP_DATA_PATH, "./user-geolocation.j
 
 console.log({ USER_LOCATION_PATH })
 
-export const updateUserCoords = ({ lat, lon }) => {
+export const updateUserCoords = ({ lat, lon, ...rest }) => {
   if (!lat || !lon) return null
 
-  const data = JSON.stringify({ lat, lon })
+  const data = JSON.stringify({ lat, lon, ...rest })
 
   fse.outputFileSync(USER_LOCATION_PATH, data, { flag: "w+" })
 

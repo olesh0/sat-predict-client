@@ -1,5 +1,9 @@
 <template>
   <div class="app-user-coords">
+    <pre>
+      {{userLocation}}
+    </pre>
+
     <div class="coords">
       <div>
         <label>Latitude</label>
@@ -105,7 +109,25 @@ export default {
 
         const { location } = await ipcRenderer.invoke('get-user-location')
 
+        if (!location) {
+          this.coordsFetchText = 'Failed to auto-fetch the coords...'
+
+          return
+        }
+
+        const additional = {
+          country: location.country_code,
+          city: location.city,
+          ip: location.ip,
+          timezone: location.timezone,
+          languages: location.languages,
+          countryName: location.country_name,
+          continentCode: location.continent_code,
+          utcOffset: location.utc_offset,
+        }
+
         await this.updateUserCoords({
+          ...additional,
           lat: location.latitude,
           lon: location.longitude,
         })
