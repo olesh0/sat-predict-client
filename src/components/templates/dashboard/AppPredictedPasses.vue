@@ -1,7 +1,14 @@
 <template>
   <div class="app-predicted-passes">
     <div class="header">
-      <h2>Next scheduled satellite passes</h2>
+      <div class="title">
+        <h2>Next scheduled satellite passes</h2>
+
+        <Refresh
+          @click="refresh"
+          class="refresh-button"
+        />
+      </div>
 
       <div
         class="selected-cat"
@@ -23,10 +30,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import store from '@/store'
 
 import AppSattelitePass from '@/components/templates/dashboard/AppSattelitePass.vue'
+import Refresh from '@/assets/icons/Refresh.vue'
 
 export default {
   data() {
@@ -36,6 +44,21 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      predictPassesForSection: 'sattelites/getPredictedPasses',
+    }),
+    async refresh() {
+      const { category: sectionName } = this
+
+      store.commit('ui/setShowPreloader', true)
+
+      store.commit('sattelites/setCategory', sectionName, { root: true })
+      store.commit('ui/setShowSelectSection', false)
+
+      await this.predictPassesForSection({ section: sectionName })
+
+      setTimeout(() => store.commit('ui/setShowPreloader', false), 500)
+    },
     setSelectedPass(pass, index) {
       store.commit('sattelites/setSelectedPass', pass)
       this.selectedPass = index
@@ -58,6 +81,7 @@ export default {
   },
   components: {
     AppSattelitePass,
+    Refresh,
   },
 }
 </script>
@@ -70,10 +94,27 @@ export default {
     grid-gap: 20px;
     align-items: center;
 
-    h2 {
-      font-size: 1.5rem;
-      margin: 0;
-      font-weight: 100;
+    .title {
+      display: flex;
+      align-items: center;
+
+      h2 {
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 100;
+      }
+
+      .refresh-button {
+        margin-left: 15px;
+        cursor: pointer;
+
+        transform: scale(0.85);
+        transition: all .15s;
+
+        &:hover {
+          transform: scale(1.1) rotate(180deg);
+        }
+      }
     }
 
     .selected-cat {
