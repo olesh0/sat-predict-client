@@ -65,14 +65,14 @@ const TIME_FORMAT = "DD/MM HH:mm:ss A"
 export default {
   computed: {
     sunHeading() {
-      const degress = Math.round(this.radiansToDegress(this.data.sunPosition.azimuth))
+      const degress = (360 / (Math.PI * 2)) * this.data.sunPosition.azimuth
 
-      return this.normalizeBearing(degress < 0 ? degress + 360 : degress)
+      return Math.round(degress < 0 ? degress + 360 : degress) + '°'
     },
     sunAltitude() {
-      const radiansAltitude = this.radiansToDegress(this.data.sunPosition.altitude)
+      const elevation = this.radiansToDegress(this.data.sunPosition.altitude)
 
-      return radiansAltitude.toFixed(2)
+      return elevation.toFixed(2)
     },
     dataList() {
       const {
@@ -99,7 +99,7 @@ export default {
 
       return {
         altitude,
-        azimuth: this.normalizeBearing(Math.round(azimuth < 0 ? azimuth + 360 : azimuth)),
+        azimuth: Math.round(azimuth < 0 ? azimuth + 360 : azimuth) + '°',
       }
     },
     moonData() {
