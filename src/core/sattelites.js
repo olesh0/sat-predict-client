@@ -1,23 +1,24 @@
-import axios from "axios"
-import jspredict from "jspredict"
-import moment from "moment"
-import bearing from "quadrant-bearing"
-import fs from "fs"
-import path from "path"
-import base64 from "base-64"
-import fse from "fs-extra"
+import axios from 'axios'
+import jspredict from 'jspredict'
+import moment from 'moment'
+import bearing from 'quadrant-bearing'
+import fs from 'fs'
+import path from 'path'
+import base64 from 'base-64'
+import fse from 'fs-extra'
 
 import {
   LOADED_FILES_PATH,
   PREDICTIONS_FILES_PATH,
   getUserCoords,
-} from "./utils"
+  parseTle,
+  shortEnglishHumanizer
+} from './utils'
 
-import { shortEnglishHumanizer } from "./utils"
 
-import celestrak from "../data/celestrack.json"
+import celestrak from '../data/celestrack.json'
 
-const TIME_FORMAT = "DD/MM/yyyy HH:mm:ss"
+const TIME_FORMAT = 'DD/MM/yyyy HH:mm:ss'
 const CACHE_LIFETIME = 3600 * 6 // 6 hours
 
 const defaultPassesWindowStart = () => Date.now() - 60000
@@ -28,7 +29,7 @@ export const getSatsList = async ({ section = null } = {}) => {
     const sectionName = section || (celestrak[0] && celestrak[0].section)
 
     if (!sectionName) {
-      console.warn("No section was found in data/celestrack.json...")
+      console.warn('No section was found in data/celestrack.json...')
       return Promise.resolve(null)
     }
 
@@ -37,7 +38,7 @@ export const getSatsList = async ({ section = null } = {}) => {
     const cachePath = path.join(LOADED_FILES_PATH, `${base64.encode(sectionName)}.cache.json`)
 
     if (!fs.existsSync(cachePath)) {
-      console.log("Creating cache for section:", sectionName)
+      console.log('Creating cache for section:', sectionName)
 
       await updateCache({ cachePath, url: sectionInfo.url })
     }
@@ -47,8 +48,8 @@ export const getSatsList = async ({ section = null } = {}) => {
     const { data: rawData, created } = JSON.parse(fileContent)
     const data = base64.decode(rawData)
 
-    const dataSplitted = data.split("\n")
-    const dataList  = []
+    const dataSplitted = data.split('\n')
+    const dataList = []
 
     dataSplitted.forEach((row, index) => {
       if (index % 3 !== 0 || !row) return
@@ -57,10 +58,13 @@ export const getSatsList = async ({ section = null } = {}) => {
       const firstRow = dataSplitted[index + 1].trim()
       const secondRow = dataSplitted[index + 2].trim()
 
+      const details = parseTle([firstRow, secondRow])
+
       dataList.push({
         satName,
         firstRow,
-        secondRow
+        secondRow,
+        details,
       })
     })
 
@@ -84,7 +88,7 @@ export const getSatsList = async ({ section = null } = {}) => {
         update: () => null,
         isOutdated: true,
         hasProblems: true,
-      }
+      },
     })
   }
 }
@@ -100,8 +104,11 @@ const calculatePasses = async ({ section, start, end, force } = {}) => {
     const passesPromises = section.sats.map(async (sattelite) => {
       const passes = await predictPasses({ sattelite, minimumElevation: 5, start, end })
 
-      return passes.map((pass) => ({
-        sattelite,
+      return passes.map(pass => ({
+        sattelite: {
+          ...sattelite,
+          details: parseTle([sattelite.firstRow, sattelite.secondRow])
+        },
         pass,
       }))
     })
@@ -172,7 +179,8 @@ export const predictPasses = async ({
   const userLocation = await getUserCoords()
 
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
-  const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
+  // Location. For now defaulted to Ukraine, Kolomyia
+  const qth = location || [userLocation.lat, userLocation.lon, 0.1]
 
   const passStart = start || defaultPassesWindowStart()
   const passEnd = end || defaultPassesWindowEnd()
@@ -187,12 +195,12 @@ export const predictPasses = async ({
 
     const transits = jspredict.transits(tle, qth, passStart, passEnd, minimumElevation)
 
-    const formatTime = (timestamp) => ({
+    const formatTime = timestamp => ({
       timestamp,
       formatted: moment(timestamp).format(TIME_FORMAT),
     })
 
-    const formatAzimuth = (degress) => ({
+    const formatAzimuth = degress => ({
       formatted: bearing(Math.round(degress)),
       degress,
     })
@@ -221,7 +229,7 @@ export const getSatInfo = async ({ sattelite, location }) => {
   const userLocation = await getUserCoords()
 
   const tle = `${sattelite.satName}\n${sattelite.firstRow}\n${sattelite.secondRow}`
-  const qth = location || [userLocation.lat, userLocation.lon, .1] // Location. For now defaulted to Ukraine, Kolomyia
+  const qth = location || [userLocation.lat, userLocation.lon, 0.1] // Location. For now defaulted to Ukraine, Kolomyia
 
   const satInfo = jspredict.observe(tle, qth)
 
@@ -240,7 +248,7 @@ const updateCache = async ({ cachePath, url }) => {
     fse.outputFileSync(cachePath, JSON.stringify({
       created: Date.now(),
       data: base64.encode(data),
-    }, null, 2), { flag: "w+" })
+    }, null, 2), { flag: 'w+' })
 
     return Promise.resolve()
   } catch (e) {
@@ -299,7 +307,7 @@ export const fetchFullData = async () => {
 
   const timeEnd = Date.now()
   const cacheGatherTime = (timeEnd - timeStart) / 1000
-  const cacheFileInfoPath = path.join(LOADED_FILES_PATH, "./cache.json")
+  const cacheFileInfoPath = path.join(LOADED_FILES_PATH, './cache.json')
 
   fs.writeFileSync(cacheFileInfoPath, JSON.stringify({
     lastUpdated: Date.now(),
@@ -307,7 +315,7 @@ export const fetchFullData = async () => {
     success: success.length,
     cacheGatherTime,
     itemsFetched: fetched,
-  }), { flag: "w" })
+  }), { flag: 'w' })
 
   return Promise.resolve({
     failed,

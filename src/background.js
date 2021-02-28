@@ -10,25 +10,17 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ])
 
-ipcMain.handle('get-categories', async () => {
-  const satsList = await getSatsCategories()
-
-  return satsList
-})
+ipcMain.handle('get-categories', async () => getSatsCategories())
 
 ipcMain.handle('get-predicted-passes', async (_, { section, force }) => {
   console.log(`getting passes of ${section} / force=${force}`)
 
-  const passes = await predictPassesOfSection({ section, force })
-
-  return passes
+  return predictPassesOfSection({ section, force })
 })
 
 ipcMain.handle('get-user-location', async () => {
   try {
-    const userLocation = await getUserLocation()
-
-    return userLocation
+    return getUserLocation()
   } catch (e) {
     console.error(e)
 
@@ -36,33 +28,16 @@ ipcMain.handle('get-user-location', async () => {
   }
 })
 
-ipcMain.handle('observe-sattelite', async (event, sattelite) => {
-  console.log('observing sattelite', sattelite)
-
-  const data = await getSatInfo({ sattelite })
-
-  return data
-})
-
-ipcMain.handle('update-user-coords', async (event, coords) => {
-  console.log('updating user coords...', coords)
-
-  const data = await updateUserCoords(coords)
-
-  return data
-})
-
-ipcMain.handle('get-user-coords', async () => {
-  const userCoords = await getUserCoords()
-
-  return userCoords
-})
+ipcMain.handle('observe-sattelite', async (event, sattelite) => getSatInfo({ sattelite }))
+ipcMain.handle('update-user-coords', async (event, coords) => updateUserCoords(coords))
+ipcMain.handle('get-user-coords', async () => getUserCoords())
 
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1280,
     height: 720,
+    fullscreen: true,
     webPreferences: {
 
       // Use pluginOptions.nodeIntegration, leave this alone

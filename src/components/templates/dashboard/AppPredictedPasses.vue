@@ -22,7 +22,7 @@
         v-bind:key="index"
         :info="pass"
         class="app-sattelite-pass"
-        :isSelected="selectedPass == index"
+        :isSelected="selectedPass === index"
         @click="setSelectedPass(pass, index)"
       />
     </div>

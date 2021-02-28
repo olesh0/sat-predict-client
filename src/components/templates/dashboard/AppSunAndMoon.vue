@@ -10,7 +10,7 @@
         <div class="base-info">
           {{sunHeading}}
           <span class="divider">|</span>
-          {{sunAltitude}}°
+          Elev. {{sunAltitude}}°
         </div>
       </div>
 
@@ -33,7 +33,7 @@
         <div class="base-info">
           {{moon.azimuth}}
           <span class="divider">|</span>
-          {{moon.altitude}}°
+          Elev. {{moon.altitude}}°
         </div>
       </div>
 
@@ -65,7 +65,9 @@ const TIME_FORMAT = "DD/MM HH:mm:ss A"
 export default {
   computed: {
     sunHeading() {
-      const degress = (360 / (Math.PI * 2)) * this.data.sunPosition.azimuth
+      const degress = this.data.sunPosition.azimuth * 180 / Math.PI
+
+      console.log('sun heading:', degress)
 
       return Math.round(degress < 0 ? degress + 360 : degress) + '°'
     },
@@ -161,6 +163,8 @@ export default {
       const sunPosition = SunCalc.getPosition(date, lat, long)
       const sunrisePos = SunCalc.getPosition(times.sunrise, lat, long)
       const sunsetPos = SunCalc.getPosition(times.sunset, lat, long)
+
+      console.log(sunPosition)
 
       const sunMaxElevation = SunCalc.getPosition(new Date(times.solarNoon), lat, long)
 

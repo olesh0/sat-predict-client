@@ -10,7 +10,19 @@
   >
     <div class="sat-info">
       <div>
-        <div class="name">{{info.sattelite.satName}}</div>
+        <div class="name">
+          {{info.sattelite.satName}}
+
+          <span
+            v-if="classification && ['C', 'S'].includes(classification.value)"
+            :class="[
+              'sat-classification',
+              classification.parsed,
+            ]"
+          >
+            {{classification.parsed}}
+          </span>
+        </div>
 
         <div
           class="pass-in-progress"
@@ -63,6 +75,13 @@ export default {
     this.interval = setInterval(this.calculatePassInProgress, 1000)
   },
   computed: {
+    classification() {
+      try {
+        return this.info.sattelite.details.classification
+      } catch (e) {
+        return {}
+      }
+    },
     colorSchema() {
       const { maxElevation: elevationAngle } = this.info.pass
 
@@ -103,6 +122,18 @@ export default {
 
     .name {
       font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+
+      .sat-classification {
+        font-size: 1rem;
+        margin-left: 10px;
+
+        color: #cc361e;
+        border: 1px solid #cc361e;
+        padding: 7px;
+        border-radius: 4px;
+      }
     }
 
     .pass-time {

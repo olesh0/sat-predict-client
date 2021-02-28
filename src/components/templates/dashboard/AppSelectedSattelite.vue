@@ -1,6 +1,10 @@
 <template>
   <div class="selected-sat">
-    <h1>{{sattelite.satName || "-"}}</h1>
+    <div class="header">
+      <h1>{{sattelite.satName || "-"}}</h1>
+
+      <Star class="star" />
+    </div>
 
     <div class="data-list">
       <div
@@ -33,6 +37,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Star from '@/assets/icons/Star.vue'
 
 export default {
   methods: {
@@ -129,16 +134,36 @@ export default {
   created() {
     this.interval = setInterval(this.calculateProgress, 1000)
   },
+  components: {
+    Star,
+  },
 }
 </script>
 
 <style lang="less" scoped>
 .selected-sat {
-  h1 {
-    margin: 0;
-    padding: 0;
+  .header {
+    display: flex;
+    justify-content: space-between;
 
-    font-size: 2rem;
+    h1 {
+      margin: 0;
+      padding: 0;
+
+      font-size: 2rem;
+    }
+
+    .star {
+      stroke: #5F6D77;
+      fill: none;
+
+      transition: all .3s;
+
+      &.selected {
+        fill: #22D5A4;
+        stroke: #22D5A4;
+      }
+    }
   }
 
   .data-list {
