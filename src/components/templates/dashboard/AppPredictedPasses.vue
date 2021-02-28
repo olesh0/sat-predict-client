@@ -25,6 +25,16 @@
         :isSelected="selectedPass === index"
         @click="setSelectedPass(pass, index)"
       />
+
+      <app-sattelite-pass
+        v-for="(sat, index) in satsList"
+        v-bind:key="index"
+        :sat="sat"
+        :isSatInfo="true"
+        class="app-sattelite-pass"
+        :isSelected="selectedPass === index"
+        @click="setSelectedPass(sat, index)"
+      />
     </div>
   </div>
 </template>
@@ -72,6 +82,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      satsList: 'sattelites/satsList',
       category: 'sattelites/category',
       passes: 'sattelites/passes',
       showSelectSection: 'ui/showSelectSection',

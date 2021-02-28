@@ -107,19 +107,26 @@ export const getSatsList = async ({ section = null } = {}) => {
 const getSatBySectionAndNorad = async ({ section, noradId }) => {
   const sectionSats = await getSatsList({ section })
 
-  console.log(sectionSats)
+  const sat = sectionSats.sats.find(({ details }) => details.noradId === noradId)
 
-  return Promise.resolve([])
+  return Promise.resolve(sat || null)
 }
 
 const getFavoriteSatsList = async () => {
   const favoriteSats = await getFavoritesList()
 
-  getSatBySectionAndNorad({ section: favoriteSats[0].sectionName, noradId: favoriteSats[0].noradId }).then(console.log)
+  const satsListPromises = favoriteSats.map(({ sectionName: section, noradId }) => {
+    return getSatBySectionAndNorad({
+      section,
+      noradId,
+    })
+  })
+
+  const sats = await Promise.all(satsListPromises)
 
   return Promise.resolve({
     section: __FAVORITES__,
-    sats: [],
+    sats,
   })
 }
 
@@ -193,6 +200,10 @@ const calculatePasses = async ({ section, start, end, force } = {}) => {
 }
 
 export const predictPassesOfSection = async ({ section, force, start = null, end = null }) => {
+  if (section === __FAVORITES__) {
+    return getFavoriteSatsList()
+  }
+
   const sectionInfo = await getSatsList({ section })
   const data = await calculatePasses({ section: sectionInfo, start, end, force })
 
