@@ -13,5 +13,8 @@ export default {
     async lookupFavorite(_, noradId) {
       return ipcRenderer.invoke('lookup-favorite', noradId)
     },
+    async toggleFavorite(_, data) {
+      return ipcRenderer.invoke('toggle-favorite', data)
+    },
   },
 }

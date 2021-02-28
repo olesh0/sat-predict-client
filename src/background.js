@@ -1,7 +1,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { getSatsCategories, predictPassesOfSection, getSatInfo } from "./core/sattelites"
-import { getUserCoords, updateUserCoords, getUserLocation, lookupFavorite } from "./core/utils"
+import { getUserCoords, updateUserCoords, getUserLocation, lookupFavorite, toggleFavorite } from "./core/utils"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -31,7 +31,9 @@ ipcMain.handle('get-user-location', async () => {
 ipcMain.handle('observe-sattelite', (_, sattelite) => getSatInfo({ sattelite }))
 ipcMain.handle('update-user-coords', (_, coords) => updateUserCoords(coords))
 ipcMain.handle('get-user-coords', () => getUserCoords())
+
 ipcMain.handle('lookup-favorite', (_, noradId) => lookupFavorite(noradId))
+ipcMain.handle('toggle-favorite', (_, data) => toggleFavorite(data))
 
 async function createWindow() {
   // Create the browser window.

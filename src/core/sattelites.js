@@ -12,7 +12,8 @@ import {
   PREDICTIONS_FILES_PATH,
   getUserCoords,
   parseTle,
-  shortEnglishHumanizer
+  shortEnglishHumanizer,
+  getFavoritesList
 } from './utils'
 
 
@@ -24,6 +25,8 @@ const CACHE_LIFETIME = 3600 * 6 // 6 hours
 const defaultPassesWindowStart = () => Date.now() - 60000
 const defaultPassesWindowEnd = () => Date.now() + (3600000 * 6)
 
+const __FAVORITES__ = 'Favorites'
+
 export const getSatsList = async ({ section = null } = {}) => {
   try {
     const sectionName = section || (celestrak[0] && celestrak[0].section)
@@ -33,14 +36,21 @@ export const getSatsList = async ({ section = null } = {}) => {
       return Promise.resolve(null)
     }
 
-    const sectionInfo = celestrak.find(({ section: s }) => s === sectionName)
-
+    const sectionInfo = celestrak.find(({ section: s }) => s === sectionName) || { name: __FAVORITES__ }
     const cachePath = path.join(LOADED_FILES_PATH, `${base64.encode(sectionName)}.cache.json`)
+
+    if (sectionName === __FAVORITES__) {
+      return getFavoriteSatsList()
+    }
 
     if (!fs.existsSync(cachePath)) {
       console.log('Creating cache for section:', sectionName)
 
-      await updateCache({ cachePath, url: sectionInfo.url })
+      await updateCache({
+        cachePath,
+        isFavorites: sectionName === __FAVORITES__,
+        url: sectionInfo && sectionInfo.url,
+      })
     }
 
     const fileBuffer = fs.readFileSync(cachePath)
@@ -91,6 +101,26 @@ export const getSatsList = async ({ section = null } = {}) => {
       },
     })
   }
+}
+
+
+const getSatBySectionAndNorad = async ({ section, noradId }) => {
+  const sectionSats = await getSatsList({ section })
+
+  console.log(sectionSats)
+
+  return Promise.resolve([])
+}
+
+const getFavoriteSatsList = async () => {
+  const favoriteSats = await getFavoritesList()
+
+  getSatBySectionAndNorad({ section: favoriteSats[0].sectionName, noradId: favoriteSats[0].noradId }).then(console.log)
+
+  return Promise.resolve({
+    section: __FAVORITES__,
+    sats: [],
+  })
 }
 
 const calculatePasses = async ({ section, start, end, force } = {}) => {
@@ -239,7 +269,7 @@ export const getSatInfo = async ({ sattelite, location }) => {
 
 export const getSatsCategories = () => celestrak.map(({ section }) => section)
 
-const updateCache = async ({ cachePath, url }) => {
+const updateCache = async ({ cachePath, isFavorites, url }) => {
   console.log(`Updating cache... ${cachePath}`)
 
   try {

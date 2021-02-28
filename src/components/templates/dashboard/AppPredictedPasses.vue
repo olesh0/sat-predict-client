@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       selectedPass: null,
-      MAX_ITEMS: 40,
+      MAX_ITEMS: 100,
     }
   },
   methods: {
@@ -51,11 +51,9 @@ export default {
       const { category: sectionName } = this
 
       store.commit('ui/setShowPreloader', true)
-
-      store.commit('sattelites/setCategory', sectionName, { root: true })
       store.commit('ui/setShowSelectSection', false)
 
-      await this.predictPassesForSection({ section: sectionName })
+      await this.predictPassesForSection({ section: sectionName, force: true })
 
       setTimeout(() => store.commit('ui/setShowPreloader', false), 500)
     },

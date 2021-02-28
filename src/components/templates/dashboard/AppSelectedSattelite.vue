@@ -1,9 +1,14 @@
 <template>
-  <div class="selected-sat">
+  <div
+    class="selected-sat"
+    :class="{
+      unactive: !timeItem || !timeItem.sattelite,
+    }"
+  >
     <div class="header">
       <h1>{{sattelite.satName || "-"}}</h1>
 
-      <button>
+      <button @click="toggleFavorite">
         <Star
           class="star"
           :class="{ selected: favorite }"
@@ -50,7 +55,22 @@ export default {
       observeSattelite: 'sattelites/observeSattelite',
       getUserCoords: 'coords/getUserCoords',
       lookupFavorite: 'favorites/lookupFavorite',
+      _toggleFavorite: 'favorites/toggleFavorite',
     }),
+    async toggleFavorite() {
+      if (!this.timeItem || !this.timeItem.sattelite) return
+
+      const {
+        noradId,
+      } = this.timeItem.sattelite.details || {}
+
+      this.favorite = await this._toggleFavorite({
+        noradId,
+        sectionName: this.category,
+      })
+
+      console.log(this.favorite)
+    },
     calculateProgress() {
       if (this.timeItem && this.timeItem.sattelite) {
         Promise.all([
@@ -74,6 +94,7 @@ export default {
   computed: {
     ...mapGetters({
       timeItem: 'sattelites/selectedPass',
+      category: 'sattelites/category',
     }),
     passInProgress() {
       const currentTime = Date.now()
@@ -131,11 +152,11 @@ export default {
     }
   },
   watch: {
-    timeItem() {
+    async timeItem() {
       this.calculateProgress()
 
       try {
-        this.favorite = this.lookupFavorite(this.timeItem.sattelite.details.noradId)
+        this.favorite = await this.lookupFavorite(this.timeItem.sattelite.details.noradId)
 
         console.log(this.favorite)
       } catch (e) {
@@ -158,6 +179,15 @@ export default {
 
 <style lang="less" scoped>
 .selected-sat {
+  opacity: 1;
+
+  &.unactive {
+    opacity: .2;
+    cursor: default;
+  }
+
+  transition: all .3s;
+
   .header {
     display: flex;
     justify-content: space-between;

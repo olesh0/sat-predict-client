@@ -26,35 +26,45 @@ export const getFavoritesList = async () => {
 export const lookupFavorite = async (noradId) => {
   if (!noradId) return Promise.reject()
 
-  const favoritesList = getFavoritesList()
+  const favoritesList = await getFavoritesList()
 
-  return favoritesList.find(({ noradId: id }) => id === noradId)
+  return favoritesList.find(({ noradId: id }) => id === noradId) || null
 }
 
 export const toggleFavorite = async (data) => {
+  console.log(data)
+
   if (!data) return Promise.reject()
 
-  const favoritesList = getFavoritesList()
-  const favoriteExists = favoritesList.find(({ noradId }) => noradId === data.noradId)
+  try {
+    const favoritesList = await getFavoritesList()
+    const favoriteExists = favoritesList.find(({ noradId }) => noradId === data.noradId)
 
-  let updatedList
+    let updatedList
 
-  // Delete if exists
-  if (favoriteExists) {
-    updatedList = favoritesList.filter(({ noradId }) => noradId !== data.noradId)
+    // Delete if exists
+    if (favoriteExists) {
+      console.log('exists...', favoriteExists)
+
+      updatedList = favoritesList.filter(({ noradId }) => noradId !== data.noradId)
+
+      updateFavorites(updatedList)
+
+      return Promise.resolve(null)
+    }
+
+    // In other case: add in
+    updatedList = [
+      data,
+      ...favoritesList,
+    ]
 
     updateFavorites(updatedList)
 
-    return Promise.resolve(updatedList)
+    return Promise.resolve(data)
+  } catch (e) {
+    console.error(e)
+
+    return Promise.resolve(null)
   }
-
-  // In other case: add in
-  updatedList = [
-    data,
-    ...favoritesList,
-  ]
-
-  updateFavorites(updatedList)
-
-  return Promise.resolve(updatedList)
 }
