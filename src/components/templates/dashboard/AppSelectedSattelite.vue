@@ -3,7 +3,12 @@
     <div class="header">
       <h1>{{sattelite.satName || "-"}}</h1>
 
-      <Star class="star" />
+      <button>
+        <Star
+          class="star"
+          :class="{ selected: favorite }"
+        />
+      </button>
     </div>
 
     <div class="data-list">
@@ -44,6 +49,7 @@ export default {
     ...mapActions({
       observeSattelite: 'sattelites/observeSattelite',
       getUserCoords: 'coords/getUserCoords',
+      lookupFavorite: 'favorites/lookupFavorite',
     }),
     calculateProgress() {
       if (this.timeItem && this.timeItem.sattelite) {
@@ -121,11 +127,21 @@ export default {
       interval: null,
       progress: 0,
       observe: {},
+      favorite: null,
     }
   },
   watch: {
     timeItem() {
       this.calculateProgress()
+
+      try {
+        this.favorite = this.lookupFavorite(this.timeItem.sattelite.details.noradId)
+
+        console.log(this.favorite)
+      } catch (e) {
+        console.log('Failed to lookup for favorite')
+        console.error(e)
+      }
     },
   },
   beforeDestroy() {
@@ -153,15 +169,22 @@ export default {
       font-size: 2rem;
     }
 
-    .star {
-      stroke: #5F6D77;
-      fill: none;
+    button {
+      border: none;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
 
-      transition: all .3s;
+      .star {
+        stroke: #5F6D77;
+        fill: none;
 
-      &.selected {
-        fill: #22D5A4;
-        stroke: #22D5A4;
+        transition: all .15s;
+
+        &.selected {
+          fill: #22D5A4;
+          stroke: #22D5A4;
+        }
       }
     }
   }
