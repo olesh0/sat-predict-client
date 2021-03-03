@@ -336,7 +336,7 @@ export const fetchFullData = async () => {
 
       success.push({ section, url })
     } catch (error) {
-      console.log(error)
+      console.error(error)
 
       failed.push({ section, url, error })
     } finally {

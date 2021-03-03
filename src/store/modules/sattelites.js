@@ -85,8 +85,6 @@ export default {
         return Promise.resolve([])
       }
 
-      console.log(data)
-
       if (section === __FAVORITES__) {
         return commit('setSatsList', data.sats || [])
       }

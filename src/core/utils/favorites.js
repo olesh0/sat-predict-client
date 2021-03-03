@@ -32,8 +32,6 @@ export const lookupFavorite = async (noradId) => {
 }
 
 export const toggleFavorite = async (data) => {
-  console.log(data)
-
   if (!data) return Promise.reject()
 
   try {
@@ -44,8 +42,6 @@ export const toggleFavorite = async (data) => {
 
     // Delete if exists
     if (favoriteExists) {
-      console.log('exists...', favoriteExists)
-
       updatedList = favoritesList.filter(({ noradId }) => noradId !== data.noradId)
 
       updateFavorites(updatedList)

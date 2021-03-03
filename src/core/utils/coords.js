@@ -1,12 +1,7 @@
 import axios from 'axios'
 import fse from 'fs-extra'
-import path from 'path'
 
-import { APP_DATA_PATH } from "./paths"
-
-export const USER_LOCATION_PATH = path.join(APP_DATA_PATH, "./user-geolocation.json")
-
-console.log({ USER_LOCATION_PATH })
+import { USER_LOCATION_PATH } from "./paths"
 
 export const updateUserCoords = ({ lat, lon, ...rest }) => {
   if (!lat || !lon) return null
@@ -23,7 +18,7 @@ export const updateUserCoords = ({ lat, lon, ...rest }) => {
 }
 
 export const getUserCoords = async () => {
-  const defaultLocation = { lat: 48.483470016064906, lon: 25.042524254113417 }
+  const defaultLocation = { lat: 48.483470016064906, lon: 25.042524254113417 } // Ukraine, Kolomyia
 
   if (!fse.existsSync(USER_LOCATION_PATH)) {
     return Promise.resolve(defaultLocation)
