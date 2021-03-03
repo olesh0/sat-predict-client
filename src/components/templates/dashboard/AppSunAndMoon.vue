@@ -67,8 +67,6 @@ export default {
     sunHeading() {
       const degress = this.data.sunPosition.azimuth * 180 / Math.PI
 
-      console.log('sun heading:', degress)
-
       return Math.round(degress < 0 ? degress + 360 : degress) + '°'
     },
     sunAltitude() {
@@ -163,8 +161,6 @@ export default {
       const sunPosition = SunCalc.getPosition(date, lat, long)
       const sunrisePos = SunCalc.getPosition(times.sunrise, lat, long)
       const sunsetPos = SunCalc.getPosition(times.sunset, lat, long)
-
-      console.log(sunPosition)
 
       const sunMaxElevation = SunCalc.getPosition(new Date(times.solarNoon), lat, long)
 

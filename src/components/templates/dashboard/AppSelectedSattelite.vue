@@ -179,11 +179,7 @@ export default {
           ? this.timeItem.sattelite.details
           : this.timeItem.details
 
-        console.log(noradId)
-
         this.favorite = await this.lookupFavorite(noradId)
-
-        console.log(this.favorite)
       } catch (e) {
         console.log('Failed to lookup for favorite')
         console.error(e)

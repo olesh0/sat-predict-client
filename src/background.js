@@ -13,7 +13,7 @@ protocol.registerSchemesAsPrivileged([
 ipcMain.handle('get-categories', async () => getSatsCategories())
 
 ipcMain.handle('get-predicted-passes', async (_, { section, force }) => {
-  console.log(`getting passes of ${section} / force=${force}`)
+  console.log(`getting passes of section=${section} / force=${force}`)
 
   return predictPassesOfSection({ section, force })
 })
