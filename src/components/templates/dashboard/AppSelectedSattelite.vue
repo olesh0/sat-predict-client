@@ -2,11 +2,11 @@
   <div
     class="selected-sat"
     :class="{
-      unactive: !timeItem || !timeItem.sattelite,
+      unactive: !timeItem && !timeItem.sattelite && !timeItem.satName,
     }"
   >
     <div class="header">
-      <h1>{{sattelite.satName || "-"}}</h1>
+      <h1>{{(sattelite.satName || timeItem.satName) || "-"}}</h1>
 
       <button @click="toggleFavorite">
         <Star
@@ -47,38 +47,54 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import store from '@/store'
 import Star from '@/assets/icons/Star.vue'
+
+const __FAVORITES__ = 'Favorites'
 
 export default {
   methods: {
     ...mapActions({
+      predictPassesForSection: 'sattelites/getPredictedPasses',
       observeSattelite: 'sattelites/observeSattelite',
       getUserCoords: 'coords/getUserCoords',
       lookupFavorite: 'favorites/lookupFavorite',
       _toggleFavorite: 'favorites/toggleFavorite',
     }),
     async toggleFavorite() {
-      if (!this.timeItem || !this.timeItem.sattelite) return
+      if (!this.timeItem.sattelite && !this.timeItem.details) return
 
-      const {
-        noradId,
-      } = this.timeItem.sattelite.details || {}
+      try {
+        store.commit('ui/setShowPreloader', true)
 
-      this.favorite = await this._toggleFavorite({
-        noradId,
-        sectionName: this.category,
-      })
+        // What is worse than this?
+        const {
+          noradId,
+        } = this.timeItem.details ? this.timeItem.details : (this.timeItem.sattelite.details || {})
 
-      console.log(this.favorite)
+        this.favorite = await this._toggleFavorite({
+          noradId,
+          sectionName: this.category,
+        })
+
+        if (this.category === __FAVORITES__) {
+          await this.predictPassesForSection({
+            section: __FAVORITES__,
+            force: true,
+          })
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        store.commit('ui/setShowPreloader', false)
+      }
     },
     calculateProgress() {
-      if (this.timeItem && this.timeItem.sattelite) {
+      if (this.timeItem && this.timeItem.sattelite || this.timeItem.satName) {
         Promise.all([
           this.observeSattelite(this.sattelite),
           this.getUserCoords(),
-        ]).then(([data]) => {
-          this.observe = data
-        })
+        ]).then(([observeData]) => (this.observe = observeData))
       }
 
       if (this.passInProgress) {
@@ -106,7 +122,7 @@ export default {
       return passStarted && !passFinished
     },
     sattelite() {
-      return this.timeItem && this.timeItem.sattelite || {
+      return this.timeItem && this.timeItem.sattelite || this.timeItem || {
         satName: '',
         firstRow: '',
         secondRow: '',
@@ -153,10 +169,19 @@ export default {
   },
   watch: {
     async timeItem() {
-      this.calculateProgress()
+      if (this.timeItem && this.timeItem.pass) {
+        this.calculateProgress()
+      }
 
       try {
-        this.favorite = await this.lookupFavorite(this.timeItem.sattelite.details.noradId)
+        // This is so bad. It'd probably worth it just to create an additional component
+        const { noradId } = this.timeItem && this.timeItem.sattelite
+          ? this.timeItem.sattelite.details
+          : this.timeItem.details
+
+        console.log(noradId)
+
+        this.favorite = await this.lookupFavorite(noradId)
 
         console.log(this.favorite)
       } catch (e) {
