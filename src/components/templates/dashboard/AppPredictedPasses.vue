@@ -22,8 +22,18 @@
         v-bind:key="index"
         :info="pass"
         class="app-sattelite-pass"
-        :isSelected="selectedPass == index"
+        :isSelected="selectedPass === index"
         @click="setSelectedPass(pass, index)"
+      />
+
+      <app-sattelite-pass
+        v-for="(sat, index) in satsList"
+        v-bind:key="index"
+        :sat="sat"
+        :isSatInfo="true"
+        class="app-sattelite-pass"
+        :isSelected="selectedPass === index"
+        @click="setSelectedPass(sat, index)"
       />
     </div>
   </div>
@@ -40,7 +50,7 @@ export default {
   data() {
     return {
       selectedPass: null,
-      MAX_ITEMS: 40,
+      MAX_ITEMS: 100,
     }
   },
   methods: {
@@ -51,11 +61,9 @@ export default {
       const { category: sectionName } = this
 
       store.commit('ui/setShowPreloader', true)
-
-      store.commit('sattelites/setCategory', sectionName, { root: true })
       store.commit('ui/setShowSelectSection', false)
 
-      await this.predictPassesForSection({ section: sectionName })
+      await this.predictPassesForSection({ section: sectionName, force: true })
 
       setTimeout(() => store.commit('ui/setShowPreloader', false), 500)
     },
@@ -74,6 +82,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      satsList: 'sattelites/satsList',
       category: 'sattelites/category',
       passes: 'sattelites/passes',
       showSelectSection: 'ui/showSelectSection',

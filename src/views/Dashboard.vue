@@ -15,6 +15,13 @@
 
         <div class="list">
           <div
+            class="item"
+            @click="loadSection($data.__FAVORITES__)"
+          >
+            {{$data.__FAVORITES__}}
+          </div>
+
+          <div
             v-for="(section) in categories"
             v-bind:key="section"
             class="item"
@@ -59,6 +66,7 @@ export default {
     return {
       sections: ['Map', 'Compass', 'Sun & Moon', 'Coords'],
       selectedSection: 'Map',
+      __FAVORITES__: 'Favorites',
     }
   },
   computed: {

@@ -1,7 +1,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { getSatsCategories, predictPassesOfSection, getSatInfo } from "./core/sattelites"
-import { getUserCoords, updateUserCoords, getUserLocation } from "./core/utils"
+import { getUserCoords, updateUserCoords, getUserLocation, lookupFavorite, toggleFavorite } from "./core/utils"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -10,25 +10,17 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ])
 
-ipcMain.handle('get-categories', async () => {
-  const satsList = await getSatsCategories()
-
-  return satsList
-})
+ipcMain.handle('get-categories', async () => getSatsCategories())
 
 ipcMain.handle('get-predicted-passes', async (_, { section, force }) => {
   console.log(`getting passes of ${section} / force=${force}`)
 
-  const passes = await predictPassesOfSection({ section, force })
-
-  return passes
+  return predictPassesOfSection({ section, force })
 })
 
 ipcMain.handle('get-user-location', async () => {
   try {
-    const userLocation = await getUserLocation()
-
-    return userLocation
+    return getUserLocation()
   } catch (e) {
     console.error(e)
 
@@ -36,33 +28,19 @@ ipcMain.handle('get-user-location', async () => {
   }
 })
 
-ipcMain.handle('observe-sattelite', async (event, sattelite) => {
-  console.log('observing sattelite', sattelite)
+ipcMain.handle('observe-sattelite', (_, sattelite) => getSatInfo({ sattelite }))
+ipcMain.handle('update-user-coords', (_, coords) => updateUserCoords(coords))
+ipcMain.handle('get-user-coords', () => getUserCoords())
 
-  const data = await getSatInfo({ sattelite })
-
-  return data
-})
-
-ipcMain.handle('update-user-coords', async (event, coords) => {
-  console.log('updating user coords...', coords)
-
-  const data = await updateUserCoords(coords)
-
-  return data
-})
-
-ipcMain.handle('get-user-coords', async () => {
-  const userCoords = await getUserCoords()
-
-  return userCoords
-})
+ipcMain.handle('lookup-favorite', (_, noradId) => lookupFavorite(noradId))
+ipcMain.handle('toggle-favorite', (_, data) => toggleFavorite(data))
 
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1280,
     height: 720,
+    fullscreen: true,
     webPreferences: {
 
       // Use pluginOptions.nodeIntegration, leave this alone

@@ -1,11 +1,14 @@
 import { ipcRenderer } from 'electron'
 
+const __FAVORITES__ = 'Favorites'
+
 export default {
   namespaced: true,
 
   state: {
     categories: [],
     passes: [],
+    satsList: [],
     sattelite: {},
     category: null,
     selectedPass: {},
@@ -17,6 +20,7 @@ export default {
     sattelite: ({ sattelite }) => sattelite,
     category: ({ category }) => category,
     selectedPass: ({ selectedPass }) => selectedPass,
+    satsList: ({ satsList }) => satsList,
   },
 
   mutations: {
@@ -34,6 +38,9 @@ export default {
     },
     setSelectedPass(state, pass) {
       state.selectedPass = pass
+    },
+    setSatsList(state, sats) {
+      state.satsList = sats
     },
   },
 
@@ -66,6 +73,9 @@ export default {
       return Promise.resolve(sortedList)
     },
     async getPredictedPasses({ commit }, { section, force = false }) {
+      commit('setSatsList', [])
+      commit('setPasses', [])
+
       const data = await ipcRenderer.invoke('get-predicted-passes', { section, force })
       const currentTime = Date.now()
 
@@ -73,6 +83,12 @@ export default {
         console.error(data.error)
 
         return Promise.resolve([])
+      }
+
+      console.log(data)
+
+      if (section === __FAVORITES__) {
+        return commit('setSatsList', data.sats || [])
       }
 
       const { passes: passesRaw } = data

@@ -10,11 +10,24 @@
   >
     <div class="sat-info">
       <div>
-        <div class="name">{{info.sattelite.satName}}</div>
+        <div class="name">
+          <span v-if="info && info.sattelite">{{info.sattelite.satName}}</span>
+          <span v-else-if="sat">{{sat.satName}}</span>
+
+          <span
+            v-if="classification && ['C', 'S'].includes(classification.value)"
+            :class="[
+              'sat-classification',
+              classification.parsed,
+            ]"
+          >
+            {{classification.parsed}}
+          </span>
+        </div>
 
         <div
           class="pass-in-progress"
-          :class="{ show: inProgress }"
+          :class="{ show: !isSatInfo && inProgress }"
           :style="{ color: colorSchema.color }"
         >
           <div class="loader">
@@ -31,7 +44,10 @@
         </div>
       </div>
 
-      <div class="pass-time">{{info.pass.start.formatted}} / {{Math.round(info.pass.maxElevation || 0)}}°</div>
+      <div
+        class="pass-time"
+        v-if="info && info.pass"
+      >{{info.pass.start.formatted}} / {{Math.round(info.pass.maxElevation || 0)}}°</div>
     </div>
   </div>
 </template>
@@ -48,6 +64,8 @@ export default {
   },
   methods: {
     calculatePassInProgress() {
+      if (this.isSatInfo) return
+
       const currentTime = Date.now()
       const { start, end } = this.info.pass
 
@@ -58,12 +76,27 @@ export default {
     },
   },
   created() {
-    this.calculatePassInProgress()
+    if (!this.isSatInfo) {
+      this.calculatePassInProgress()
 
-    this.interval = setInterval(this.calculatePassInProgress, 1000)
+      this.interval = setInterval(this.calculatePassInProgress, 1000)
+    }
   },
   computed: {
+    classification() {
+      try {
+        if (this.isSatInfo) {
+          return this.sat.classification
+        }
+
+        return this.info.sattelite.details.classification
+      } catch (e) {
+        return {}
+      }
+    },
     colorSchema() {
+      if (this.isSatInfo) return SchemasList.green
+
       const { maxElevation: elevationAngle } = this.info.pass
 
       if (elevationAngle < 30) return SchemasList.red
@@ -73,7 +106,12 @@ export default {
   },
   props: {
     isSelected: Boolean,
-    info: Object,
+    info: {
+      type: Object,
+      required: false,
+    },
+    isSatInfo: Boolean,
+    sat: Object,
   },
 }
 </script>
@@ -103,6 +141,18 @@ export default {
 
     .name {
       font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+
+      .sat-classification {
+        font-size: 1rem;
+        margin-left: 10px;
+
+        color: #cc361e;
+        border: 1px solid #cc361e;
+        padding: 7px;
+        border-radius: 4px;
+      }
     }
 
     .pass-time {
