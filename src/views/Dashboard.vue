@@ -129,7 +129,7 @@ export default {
 
   .selected-sattelite,
   .predicted-passes {
-    background: #242729;
+    background: var(--color-bg-light);
     padding: 2rem;
   }
 
@@ -158,7 +158,7 @@ export default {
       left: 0;
 
       padding: 10px;
-      background: #242729;
+      background: var(--color-bg-light);
       justify-content: flex-start;
       font-size: 1.1rem;
 
@@ -171,11 +171,11 @@ export default {
 
       .section {
         padding: 5px 7px;
-        color: #5F6D77;
+        color: var(--color-font-dark);
         cursor: pointer;
 
         &.selected {
-          color: #22D5A4;
+          color: var(--color-accent-green);
         }
       }
     }
@@ -188,7 +188,7 @@ export default {
 
       width: 100%;
       height: 100%;
-      background: #242729;
+      background: var(--color-bg-light);
       padding: 2rem;
 
       opacity: 0;
@@ -217,10 +217,10 @@ export default {
         .item {
           cursor: pointer;
           margin-bottom: 10px;
-          color: #5F6D77;
+          color: var(--color-font-dark);
 
           &:hover {
-            color: #eee;
+            color: var(--color-font-main);
             text-decoration: underline;
           }
         }

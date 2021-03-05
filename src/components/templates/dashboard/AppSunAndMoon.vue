@@ -276,7 +276,7 @@ export default {
 <style lang="less" scoped>
 .app-sun-and-moon {
   padding: 80px 20px 20px;
-  background: #242729;
+  background: var(--color-bg-light);
 
   .object {
     &.moon {
@@ -293,7 +293,7 @@ export default {
       margin-bottom: 20px;
 
       .base-info {
-        color: #5F6D77;
+        color: var(--color-font-dark);
 
         .divider {
           margin: 0 5px;
@@ -316,11 +316,11 @@ export default {
 
         .mid-value,
         .label {
-          color: #5F6D77;
+          color: var(--color-font-dark);
         }
 
         .value {
-          color: #eee;
+          color: var(--color-font-main);
         }
       }
     }

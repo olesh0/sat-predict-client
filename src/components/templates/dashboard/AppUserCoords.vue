@@ -138,11 +138,17 @@ export default {
           utcOffset: location.utc_offset,
         }
 
+        console.log(location)
+
         await this.updateUserCoords({
           ...additional,
           lat: location.latitude,
           lon: location.longitude,
         })
+
+        if (!location.latitude || !location.longitude) {
+          throw new Error('Failed to auto-fetch coords')
+        }
 
         this.autoFetchedLocation = location
         this.updated = true
@@ -219,27 +225,27 @@ export default {
     input {
       padding: 15px;
       border-radius: 5px;
-      background: rgba(255, 255, 255, .04);
+      background: var(--color-bg-user-coords-input);
       border: 0;
       font-size: 1.3rem;
-      color: #FFF;
+      color: var(--color-font-main);
       outline: none;
       margin-bottom: 20px;
       width: 100%;
 
       &::placeholder {
-        color: #848F97;
+        color: var(--color-font-light);
       }
     }
   }
 
   .auto-fetched-location-info {
-    color: rgba(255, 255, 255, .2);
+    color: var(--color-font-dark);
     margin-bottom: 30px;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 
     span {
-      color: #8E22D5;
+      color: var(--color-accent-purple);
     }
   }
 
@@ -257,12 +263,12 @@ export default {
       border: 0;
       font-size: 1.1rem;
       font-weight: 100;
-      background: #22D5A4;
-      color: #000;
+      background: var(--color-accent-green);
+      color: var(--coords-button-font-color);
       cursor: pointer;
 
       &.fetch-coords {
-        background: rgba(213, 34, 34, 1);
+        background: var(--color-accent-red);
       }
     }
   }

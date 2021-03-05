@@ -117,6 +117,8 @@ export default {
         margin-left: 15px;
         cursor: pointer;
 
+        stroke: var(--color-font-dark);
+
         transform: scale(0.85);
         transition: all .15s;
 
@@ -129,7 +131,8 @@ export default {
     .selected-cat {
       font-size: 1rem;
       font-weight: 100;
-      color: #5F6D77;
+
+      color: var(--color-font-dark);
       cursor: pointer;
     }
   }

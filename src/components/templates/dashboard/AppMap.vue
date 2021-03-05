@@ -47,6 +47,8 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { MapsPlugin, Marker, Zoom, Highlight, Selection } from '@syncfusion/ej2-vue-maps'
 
+import { MAP_FILL_COLOR, MAP_BORDER_COLOR } from '@/core/constants'
+
 import worldMap from '@/assets/world-map.json'
 
 Vue.use(MapsPlugin)
@@ -90,9 +92,9 @@ export default Vue.extend({
       shapeData: worldMap,
       layerType: 'Geometry',
       shapeSettings: {
-        fill: '#191A1A',
+        fill: MAP_FILL_COLOR,
         border: {
-          color: '#454545',
+          color: MAP_BORDER_COLOR,
           width: 1,
         }
       },
@@ -123,8 +125,8 @@ export default Vue.extend({
 
 .marker-template {
   border-radius: 50%;
-  background: rgba(213, 34, 34, .2);
-  border: 2px solid rgba(213, 34, 34, .8);
+  background: var(--color-accent-red-fade);
+  border: 2px solid var(--color-accent-red);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -135,21 +137,21 @@ export default Vue.extend({
   transition: all 1s;
 
   &.user-location {
-    background: rgba(142, 34, 213, .2);
-    border-color: rgba(142, 34, 213, .8);
+    background: var(--color-accent-purple-fade);
+    border-color: var(--color-accent-purple);
 
     width: 55px;
     height: 55px;
 
     .pint {
-      background: #8E22D5;
+      background: var(--color-accent-purple);
     }
   }
 
   .point {
     width: 5px;
     height: 5px;
-    background: rgba(213, 34, 34, 1);
+    background: var(--color-accent-red);
     border-radius: 4px;
   }
 }

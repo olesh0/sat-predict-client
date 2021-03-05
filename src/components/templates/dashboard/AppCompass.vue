@@ -212,7 +212,7 @@ export default {
   width: 100%;
   height: 100%;
 
-  background: #242729;
+  background: var(--color-bg-light);
   padding: 80px 20px 20px;
 
   .content {
@@ -232,11 +232,11 @@ export default {
           font-weight: 100;
         }
 
-        color: rgb(34, 213, 164);
+        color: var(--color-accent-green);
         margin-bottom: 5px;
 
         b {
-          color: #5F6D77;
+          color: var(--color-font-dark);
         }
       }
     }
@@ -267,7 +267,7 @@ export default {
 
       canvas {
         background: rgba(0, 0, 0, .15);
-        border: 1px solid #5F6D77;
+        border: 1px solid var(--color-font-dark);
         border-radius: 50%;
       }
     }
