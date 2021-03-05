@@ -16,10 +16,9 @@ import {
   getFavoritesList
 } from './utils'
 
-
+import { TIME_FORMAT } from './constants'
 import celestrak from '../data/celestrack.json'
 
-const TIME_FORMAT = 'DD/MM/yyyy HH:mm:ss'
 const CACHE_LIFETIME = 3600 * 6 // 6 hours
 
 const defaultPassesWindowStart = () => Date.now() - 60000
