@@ -32,13 +32,17 @@
 
       <div class="map-wrapper">
         <div class="sections">
-          <div
-            v-for="(section) in sections"
-            v-bind:key="section"
-            @click="selectedSection = section"
-            class="section"
-            :class="{ selected: selectedSection === section }"
-          >{{section}}</div>
+          <div class="list">
+            <div
+              v-for="(section) in sections"
+              v-bind:key="section"
+              @click="selectedSection = section"
+              class="section"
+              :class="{ selected: selectedSection === section }"
+            >{{section}}</div>
+          </div>
+
+          <Settings class="settings-icon" />
         </div>
 
         <app-map v-if="selectedSection === 'Map'" class="app-map" />
@@ -54,6 +58,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import store from '@/store'
 
+import Settings from '@/assets/icons/Settings'
 import AppSelectedSattelite from '@/components/templates/dashboard/AppSelectedSattelite.vue'
 import AppPredictedPasses from '@/components/templates/dashboard/AppPredictedPasses.vue'
 import AppMap from '@/components/templates/dashboard/AppMap.vue'
@@ -112,6 +117,7 @@ export default {
     AppSunAndMoon,
     AppUserCoords,
     AppMap,
+    Settings,
   },
 }
 </script>
@@ -159,23 +165,44 @@ export default {
 
       padding: 10px;
       background: var(--color-bg-light);
-      justify-content: flex-start;
       font-size: 1.1rem;
 
       display: grid;
-      grid-template-columns: repeat(4, auto);
-      grid-gap: 20px;
+      grid-template-columns: 1fr auto;
+      grid-gap: 15px;
+
+      align-items: center;
 
       margin-bottom: 5px;
       width: 100%;
 
-      .section {
-        padding: 5px 7px;
-        color: var(--color-font-dark);
-        cursor: pointer;
+      .list {
+        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: repeat(4, auto);
+        grid-gap: 20px;
 
-        &.selected {
-          color: var(--color-accent-green);
+        .section {
+          padding: 5px 7px;
+          color: var(--color-font-dark);
+          cursor: pointer;
+
+          &.selected {
+            color: var(--color-accent-green);
+          }
+        }
+      }
+
+      .settings-icon {
+        height: 20px;
+        fill: var(--color-font-dark);
+        cursor: pointer;
+        margin: 0 10px;
+
+        transition: all 150ms;
+
+        &:hover {
+          fill: var(--color-font-main);
         }
       }
     }

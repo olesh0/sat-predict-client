@@ -3,3 +3,4 @@ export const TIME_FORMAT = 'DD/MM HH:mm:ss A'
 
 export const MAP_FILL_COLOR = '#191A1A'
 export const MAP_BORDER_COLOR = '#454545'
+export const DEFAULT_USER_THEME = 'defaultLight'

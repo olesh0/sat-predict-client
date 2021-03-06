@@ -1,0 +1,54 @@
+[
+  {
+    "name": {
+      "default": "Default Dark",
+      "camelCase": "defaultDark"
+    },
+    "accents": {
+      "green": {
+        "name": "green",
+        "transparent": "rgba(34, 213, 164, .2)",
+        "highlight": "rgba(34, 213, 164, .7)",
+        "color": "#22D5A4"
+      },
+      "purple": {
+        "name": "purple",
+        "transparent": "rgba(142, 34, 213, .2)",
+        "highlight": "rgba(142, 34, 213, .7)",
+        "color": "#8E22D5"
+      },
+      "red": {
+        "name": "red",
+        "transparent": "rgba(213, 34, 34, .2)",
+        "highlight": "rgba(213, 34, 34, .7)",
+        "color": "#D52222"
+      }
+    }
+  },
+  {
+    "name": {
+      "default": "Default Light",
+      "camelCase": "defaultLight"
+    },
+    "accents": {
+      "green": {
+        "name": "green",
+        "transparent": "rgba(34, 213, 164, .2)",
+        "highlight": "rgba(34, 213, 164, .7)",
+        "color": "#22D5A4"
+      },
+      "purple": {
+        "name": "purple",
+        "transparent": "rgba(142, 34, 213, .2)",
+        "highlight": "rgba(142, 34, 213, .7)",
+        "color": "#8E22D5"
+      },
+      "red": {
+        "name": "red",
+        "transparent": "rgba(213, 34, 34, .2)",
+        "highlight": "rgba(213, 34, 34, .7)",
+        "color": "#D52222"
+      }
+    }
+  }
+]
