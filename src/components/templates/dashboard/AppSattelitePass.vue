@@ -95,13 +95,23 @@ export default {
       }
     },
     colorSchema() {
-      if (this.isSatInfo) return SchemasList.green
+      const generateColor = (color) => ({
+        color: `var(--color-accent-${color})`,
+        highlight: `var(--color-accent-${color}-fade)`,
+        transparent: `var(--color-accent-${color}-ultra-fade)`,
+      })
+
+      if (this.isSatInfo) generateColor('green')
 
       const { maxElevation: elevationAngle } = this.info.pass
 
-      if (elevationAngle < 30) return SchemasList.red
-      if (elevationAngle >= 30 && elevationAngle < 60) return SchemasList.purple
-      if (elevationAngle >= 60) return SchemasList.green
+      let color
+
+      if (elevationAngle < 30) color = 'red'
+      if (elevationAngle >= 30 && elevationAngle < 60) color = 'purple'
+      if (elevationAngle >= 60) color = 'green'
+
+      return generateColor(color)
     },
   },
   props: {

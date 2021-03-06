@@ -8,6 +8,7 @@ import {
   lookupFavorite,
   toggleFavorite,
   getUserTheme,
+  updateUserTheme,
 } from "./core/utils"
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -39,6 +40,7 @@ ipcMain.handle('observe-sattelite', (_, sattelite) => getSatInfo({ sattelite }))
 ipcMain.handle('update-user-coords', (_, coords) => updateUserCoords(coords))
 ipcMain.handle('get-user-coords', () => getUserCoords())
 ipcMain.handle('get-user-theme', () => getUserTheme())
+ipcMain.handle('update-user-theme', (_, themeName) => updateUserTheme(themeName))
 
 ipcMain.handle('lookup-favorite', (_, noradId) => lookupFavorite(noradId))
 ipcMain.handle('toggle-favorite', (_, data) => toggleFavorite(data))

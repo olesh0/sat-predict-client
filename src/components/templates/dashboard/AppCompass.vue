@@ -250,7 +250,7 @@ export default {
       justify-content: center;
 
       .heading {
-        color: #5F6D77;
+        color: var(--color-font-dark);
         font-size: 1rem;
         text-align: center;
       }

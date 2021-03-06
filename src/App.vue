@@ -46,6 +46,30 @@ export default {
 </script>
 
 <style lang="less">
+#app[data-theme="spacegray"] {
+  /* Don't forget to change some of these in core/constants.js */
+  --color-bg-dark: #343d46; // main bg
+  --color-bg-light: #4e5c68;
+  --color-font-dark: #9ba9b6;
+  --color-font-light: #848F97;
+  --color-font-main: #eee;
+
+  --color-accent-green: #22d5a4;
+  --color-accent-red: #ff0000;
+  --color-accent-purple: #8E22D5;
+
+  --color-bg-user-coords-input: rgba(255, 255, 255, .04);
+  --coords-button-font-color: #000;
+
+  --color-accent-green-fade: fadeout(rgb(34, 213, 164), 60%);
+  --color-accent-red-fade: fadeout(rgb(213, 34, 34), 60%);
+  --color-accent-purple-fade: fadeout(#8E22D5, 60%);
+
+  --color-accent-green-ultra-fade: fadeout(rgb(34, 213, 164), 80%);
+  --color-accent-red-ultra-fade: fadeout(rgb(213, 34, 34), 80%);
+  --color-accent-purple-ultra-fade: fadeout(#8E22D5, 80%);
+}
+
 #app[data-theme="defaultDark"] {
   /* Don't forget to change some of these in core/constants.js */
   --color-bg-dark: #17191A; // main bg
@@ -54,8 +78,8 @@ export default {
   --color-font-light: #848F97;
   --color-font-main: #eee;
 
-  --color-accent-green: rgb(34, 213, 164);
-  --color-accent-red: rgb(213, 34, 34);
+  --color-accent-green: #22d5a4;
+  --color-accent-red: #d52222;
   --color-accent-purple: #8E22D5;
 
   --color-bg-user-coords-input: rgba(255, 255, 255, .04);

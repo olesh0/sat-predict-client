@@ -4,9 +4,7 @@ import { APP_DATA_FILE_PATH } from './paths'
 import { DEFAULT_USER_THEME } from '../constants'
 import Themes from '../../assets/themes.json'
 
-export const readThemesList = () => {
-  return Themes
-}
+export const readThemesList = () => Themes
 
 export const readAppData = async () => {
   try {
@@ -28,4 +26,21 @@ export const getUserTheme = async () => {
   const themeData = Themes.find(({ name }) => themeCamelCaseName === name.camelCase)
 
   return Promise.resolve(themeData)
+}
+
+export const updateUserTheme = async (themeName) => {
+  try {
+    const appData = await readAppData() || {}
+
+    const updatedAppData = {
+      ...appData,
+      theme: themeName,
+    }
+
+    fs.writeFileSync(APP_DATA_FILE_PATH, JSON.stringify(updatedAppData))
+
+    return Promise.resolve()
+  } catch (e) {
+    return Promise.reject()
+  }
 }

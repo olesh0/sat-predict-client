@@ -43,5 +43,18 @@ export default {
         return Promise.reject(e)
       }
     },
+    async updateUserTheme({ commit }, themeName) {
+      try {
+        await ipcRenderer.invoke('update-user-theme', themeName)
+
+        commit('setUserThemeName', themeName)
+
+        return Promise.resolve(themeName)
+      } catch (e) {
+        console.error(e)
+
+        return Promise.reject(e)
+      }
+    },
   },
 }

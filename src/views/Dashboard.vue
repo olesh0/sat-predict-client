@@ -1,5 +1,10 @@
 <template>
   <div class="wrapper">
+    <app-settings-modal
+      :show="showSettingsModal"
+      @close="showSettingsModal = false"
+    />
+
     <app-selected-sattelite class="selected-sattelite" />
 
     <app-predicted-passes class="predicted-passes" />
@@ -42,7 +47,12 @@
             >{{section}}</div>
           </div>
 
-          <Settings class="settings-icon" />
+          <button
+            class="settings-icon"
+            @click="showSettingsModal = true"
+          >
+            <Settings />
+          </button>
         </div>
 
         <app-map v-if="selectedSection === 'Map'" class="app-map" />
@@ -65,6 +75,7 @@ import AppMap from '@/components/templates/dashboard/AppMap.vue'
 import AppCompass from '@/components/templates/dashboard/AppCompass.vue'
 import AppSunAndMoon from '@/components/templates/dashboard/AppSunAndMoon.vue'
 import AppUserCoords from '@/components/templates/dashboard/AppUserCoords.vue'
+import AppSettingsModal from '@/components/templates/dashboard/AppSettingsModal.vue'
 
 export default {
   data() {
@@ -72,6 +83,7 @@ export default {
       sections: ['Map', 'Compass', 'Sun & Moon', 'Coords'],
       selectedSection: 'Map',
       __FAVORITES__: 'Favorites',
+      showSettingsModal: false,
     }
   },
   computed: {
@@ -113,6 +125,7 @@ export default {
   components: {
     AppSelectedSattelite,
     AppPredictedPasses,
+    AppSettingsModal,
     AppCompass,
     AppSunAndMoon,
     AppUserCoords,
@@ -194,15 +207,22 @@ export default {
       }
 
       .settings-icon {
-        height: 20px;
-        fill: var(--color-font-dark);
-        cursor: pointer;
-        margin: 0 10px;
+        background: transparent;
+        border: 0;
+        outline: none;
+        padding: 5px;
 
-        transition: all 150ms;
+        svg {
+          height: 20px;
+          fill: var(--color-font-dark);
+          cursor: pointer;
+          margin: 0 10px;
+
+          transition: all 150ms;
+        }
 
         &:hover {
-          fill: var(--color-font-main);
+          svg { fill: var(--color-font-main) }
         }
       }
     }
