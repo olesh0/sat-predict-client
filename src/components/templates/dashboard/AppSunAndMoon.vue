@@ -77,7 +77,7 @@ export default {
   computed: {
     sun() {
       const degress = this.radiansToDegress(this.data.sunPosition.azimuth)
-      const elevation = this.radiansToDegress(this.data.sunPosition.altitude)
+      const elevation = this.radiansToDegress(this.data.sunPosition.altitude, { isAltitude: true })
 
       return {
         heading: degress.toFixed(0),
