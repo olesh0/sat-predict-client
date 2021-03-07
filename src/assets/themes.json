@@ -15,6 +15,13 @@
   },
   {
     "name": {
+      "default": "Absolute dark",
+      "camelCase": "absoluteDark"
+    },
+    "type": "__DARK__"
+  },
+  {
+    "name": {
       "default": "Default Light",
       "camelCase": "defaultLight"
     },

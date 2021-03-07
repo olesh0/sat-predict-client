@@ -49,6 +49,7 @@ export default {
 // Importing dark themes
 @import url('./themes/dark/default-dark.less');
 @import url('./themes/dark/spacegray.less');
+@import url('./themes/dark/absolute-dark.less');
 
 // Importing light themes
 @import url('./themes/light/default-light.less');
