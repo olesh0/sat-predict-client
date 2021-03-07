@@ -53,8 +53,6 @@
 </template>
 
 <script>
-import SchemasList from "@/assets/schemas-list.json"
-
 export default {
   data() {
     return {

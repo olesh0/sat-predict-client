@@ -12,17 +12,23 @@
         </button>
       </div>
 
-      <div class="label">Themes</div>
+      <div
+        v-for="theme in themesList"
+        v-bind:key="theme.label"
+        class="themes-section"
+      >
+        <div class="label">Themes ({{ theme.label }})</div>
 
-      <div class="themes">
-        <div
-          v-for="theme in themesList"
-          v-bind:key="theme.name.camelCase"
-          class="theme"
-          :class="{ selected: userThemeName === theme.name.camelCase }"
-          @click="changeTheme(theme.name.camelCase)"
-        >
-          {{theme.name.default}}
+        <div class="themes">
+          <div
+            v-for="theme in theme.items"
+            v-bind:key="theme.name.camelCase"
+            class="theme"
+            :class="{ selected: userThemeName === theme.name.camelCase }"
+            @click="changeTheme(theme.name.camelCase)"
+          >
+            {{theme.name.default}}
+          </div>
         </div>
       </div>
     </div>
@@ -37,6 +43,7 @@ import AppModal from '@/components/ui/AppModal.vue'
 import Close from '@/assets/icons/Close.vue'
 
 import Themes from '@/assets/themes.json'
+import { SCHEMA_DARK, SCHEMA_LIGHT } from '@/core/constants'
 
 export default {
   methods: {
@@ -62,7 +69,12 @@ export default {
       userThemeName: 'ui/userThemeName',
     }),
     themesList() {
-      return Themes || []
+      const themes = Themes || []
+
+      return [
+        { label: 'Dark', items: themes.filter(({ type }) => type === SCHEMA_DARK) },
+        { label: 'Light', items: themes.filter(({ type }) => type === SCHEMA_LIGHT) },
+      ]
     },
   },
   components: {
@@ -114,27 +126,31 @@ export default {
     margin-top: 20px;
   }
 
-  .themes {
-    margin-top: 10px;
+  .themes-section {
+    margin: 30px 0;
 
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 15px;
+    .themes {
+      margin-top: 10px;
 
-    .theme {
-      background: var(--color-bg-light);
-      padding: 15px 20px;
-      text-align: center;
-      border-radius: 5px;
-      border: 2px solid transparent;
-      cursor: pointer;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-gap: 15px;
 
-      font-size: 1.2rem;
-      color: var(--color-font-dark);
+      .theme {
+        background: var(--color-bg-light);
+        padding: 15px 20px;
+        text-align: center;
+        border-radius: 5px;
+        border: 2px solid transparent;
+        cursor: pointer;
 
-      &.selected {
-        color: var(--color-font-main);
-        border-color: var(--color-accent-green);
+        font-size: 1.2rem;
+        color: var(--color-font-dark);
+
+        &.selected {
+          color: var(--color-font-main);
+          border-color: var(--color-accent-green);
+        }
       }
     }
   }

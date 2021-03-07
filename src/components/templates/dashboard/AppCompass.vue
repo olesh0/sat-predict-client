@@ -59,6 +59,9 @@ export default {
       getUserLocation: 'coords/getUserCoords',
     }),
     drawBasicCompass() {
+      const getCssVariableValue = (name, element = document.getElementById('app')) =>
+        getComputedStyle(element).getPropertyValue(name)
+
       const { ctx, canvas } = this
 
       const centerX = canvas.clientWidth / 2
@@ -68,7 +71,7 @@ export default {
 
       ctx.beginPath()
       ctx.lineWidth = 1
-      ctx.strokeStyle = '#5F6D77'
+      ctx.strokeStyle = getCssVariableValue('--color-font-dark')
 
       // Cross
       ctx.moveTo(centerX, 0)
@@ -84,21 +87,21 @@ export default {
 
       // low elevation
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(213, 34, 34, .5)'
+      ctx.strokeStyle = getCssVariableValue('--color-accent-red')
       ctx.arc(centerX, centerY, countDegressPercentage(15), 0, 2 * Math.PI)
       ctx.arc(centerX, centerY, countDegressPercentage(30), 0, 2 * Math.PI)
       ctx.stroke()
 
       // middle elevation
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(142, 34, 213, .5)'
+      ctx.strokeStyle = getCssVariableValue('--color-accent-purple')
       ctx.arc(centerX, centerY, countDegressPercentage(45), 0, 2 * Math.PI)
       ctx.arc(centerX, centerY, countDegressPercentage(60), 0, 2 * Math.PI)
       ctx.stroke()
 
       // high elevation
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(34, 213, 164, .5)'
+      ctx.strokeStyle = getCssVariableValue('--color-accent-green')
       ctx.arc(centerX, centerY, countDegressPercentage(75), 0, 2 * Math.PI)
       ctx.arc(centerX, centerY, countDegressPercentage(90), 0, 2 * Math.PI)
       ctx.stroke()

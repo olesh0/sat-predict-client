@@ -46,78 +46,12 @@ export default {
 </script>
 
 <style lang="less">
-#app[data-theme="spacegray"] {
-  /* Don't forget to change some of these in core/constants.js */
-  --color-bg-dark: #343d46; // main bg
-  --color-bg-light: #4e5c68;
-  --color-font-dark: #9ba9b6;
-  --color-font-light: #848F97;
-  --color-font-main: #eee;
+// Importing dark themes
+@import url('./themes/dark/default-dark.less');
+@import url('./themes/dark/spacegray.less');
 
-  --color-accent-green: #22d5a4;
-  --color-accent-red: #ff0000;
-  --color-accent-purple: #8E22D5;
-
-  --color-bg-user-coords-input: rgba(255, 255, 255, .04);
-  --coords-button-font-color: #000;
-
-  --color-accent-green-fade: fadeout(rgb(34, 213, 164), 60%);
-  --color-accent-red-fade: fadeout(rgb(213, 34, 34), 60%);
-  --color-accent-purple-fade: fadeout(#8E22D5, 60%);
-
-  --color-accent-green-ultra-fade: fadeout(rgb(34, 213, 164), 80%);
-  --color-accent-red-ultra-fade: fadeout(rgb(213, 34, 34), 80%);
-  --color-accent-purple-ultra-fade: fadeout(#8E22D5, 80%);
-}
-
-#app[data-theme="defaultDark"] {
-  /* Don't forget to change some of these in core/constants.js */
-  --color-bg-dark: #17191A; // main bg
-  --color-bg-light: #242729;
-  --color-font-dark: #5F6D77;
-  --color-font-light: #848F97;
-  --color-font-main: #eee;
-
-  --color-accent-green: #22d5a4;
-  --color-accent-red: #d52222;
-  --color-accent-purple: #8E22D5;
-
-  --color-bg-user-coords-input: rgba(255, 255, 255, .04);
-  --coords-button-font-color: #000;
-
-  --color-accent-green-fade: fadeout(rgb(34, 213, 164), 60%);
-  --color-accent-red-fade: fadeout(rgb(213, 34, 34), 60%);
-  --color-accent-purple-fade: fadeout(#8E22D5, 60%);
-
-  --color-accent-green-ultra-fade: fadeout(rgb(34, 213, 164), 80%);
-  --color-accent-red-ultra-fade: fadeout(rgb(213, 34, 34), 80%);
-  --color-accent-purple-ultra-fade: fadeout(#8E22D5, 80%);
-}
-
-// Just for testing
-#app[data-theme="defaultLight"] {
-  /* Don't forget to change some of these in core/constants.js */
-  --color-bg-dark: #bdbbbb;
-  --color-bg-light: #dddddd;
-  --color-font-dark: #7b8a94;
-  --color-font-light: #646e75;
-  --color-font-main: rgb(78, 78, 80);
-
-  --color-accent-green: rgb(28, 182, 141);
-  --color-accent-red: rgb(168, 26, 26);
-  --color-accent-purple: #6c19a3;
-
-  --color-bg-user-coords-input: rgba(255, 255, 255, .04);
-  --coords-button-font-color: #000;
-
-  --color-accent-green-fade: fadeout(rgb(34, 213, 164), 60%);
-  --color-accent-red-fade: fadeout(rgb(213, 34, 34), 60%);
-  --color-accent-purple-fade: fadeout(#8E22D5, 60%);
-
-  --color-accent-green-ultra-fade: fadeout(rgb(34, 213, 164), 80%);
-  --color-accent-red-ultra-fade: fadeout(rgb(213, 34, 34), 80%);
-  --color-accent-purple-ultra-fade: fadeout(#8E22D5, 80%);
-}
+// Importing light themes
+@import url('./themes/light/default-light.less');
 
 /* latin */
 @font-face {

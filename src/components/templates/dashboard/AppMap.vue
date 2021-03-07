@@ -47,8 +47,6 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { MapsPlugin, Marker, Zoom, Highlight, Selection } from '@syncfusion/ej2-vue-maps'
 
-import { MAP_FILL_COLOR, MAP_BORDER_COLOR } from '@/core/constants'
-
 import worldMap from '@/assets/world-map.json'
 
 Vue.use(MapsPlugin)
@@ -62,6 +60,8 @@ export default Vue.extend({
   },
   methods: {
     handleMapClick: () => {},
+    getCssVariableValue: (name, element = document.getElementById('app')) =>
+      getComputedStyle(element).getPropertyValue(name)
   },
   data() {
     return {
@@ -92,9 +92,9 @@ export default Vue.extend({
       shapeData: worldMap,
       layerType: 'Geometry',
       shapeSettings: {
-        fill: MAP_FILL_COLOR,
+        fill: this.getCssVariableValue('--map-fill-color'),
         border: {
-          color: MAP_BORDER_COLOR,
+          color: this.getCssVariableValue('--map-border-color'),
           width: 1,
         }
       },
