@@ -107,7 +107,7 @@ export default {
         {
           label: 'Solar noon',
           midValue: `Elev. ${sunMaxElevation.toFixed(1)}°`,
-          value: `${moment(sunTimes.solarNoon).format(TIME_FORMAT)}°`,
+          value: moment(sunTimes.solarNoon).format(TIME_FORMAT),
         },
         {
           label: 'Nadir',
