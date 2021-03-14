@@ -1,24 +1,58 @@
 <template>
-  <div id="app">
-    <router-view/>
+  <div
+    id="app"
+    :data-theme="userThemeName"
+  >
+    <router-view />
 
     <app-preloader />
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
+import { DEFAULT_USER_THEME } from '@/core/constants'
 import AppPreloader from '@/components/ui/AppPreloader.vue'
 
 export default {
-  name: 'app',
+  methods: {
+    ...mapActions({
+      getUserThemeData: 'ui/getUserThemeData',
+    }),
+  },
+  computed: {
+    ...mapGetters({
+      userThemeName: 'ui/userThemeName',
+    }),
+    userTheme() {
+      return this.userThemeName || DEFAULT_USER_THEME
+    },
+  },
+  async created() {
+    try {
+      const userTheme = await this.getUserThemeData()
+
+      console.log(userTheme)
+    } catch (e) {
+      console.error(e)
+    }
+  },
   components: {
     AppPreloader,
   },
+  name: 'app',
 }
 </script>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+<style lang="less">
+// Importing dark themes
+@import url('./themes/dark/default-dark.less');
+@import url('./themes/dark/spacegray.less');
+@import url('./themes/dark/absolute-dark.less');
+
+// Importing light themes
+@import url('./themes/light/default-light.less');
 
 /* latin */
 @font-face {
@@ -49,12 +83,13 @@ body, #app {
 
   padding: 0;
   margin: 0;
+
   /* Let's pretend it's a native app */
   cursor: default;
   user-select: none;
 
-  background: #17191A;
-  color: #EEE;
+  background: var(--color-bg-dark);
+  color: var(--color-font-main);
 
   font: 22px 'Orbitron', Tahoma, Arial;
 }

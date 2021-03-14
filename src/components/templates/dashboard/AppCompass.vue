@@ -59,6 +59,9 @@ export default {
       getUserLocation: 'coords/getUserCoords',
     }),
     drawBasicCompass() {
+      const getCssVariableValue = (name, element = document.getElementById('app')) =>
+        getComputedStyle(element).getPropertyValue(name)
+
       const { ctx, canvas } = this
 
       const centerX = canvas.clientWidth / 2
@@ -68,7 +71,7 @@ export default {
 
       ctx.beginPath()
       ctx.lineWidth = 1
-      ctx.strokeStyle = '#5F6D77'
+      ctx.strokeStyle = getCssVariableValue('--color-font-dark')
 
       // Cross
       ctx.moveTo(centerX, 0)
@@ -84,21 +87,21 @@ export default {
 
       // low elevation
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(213, 34, 34, .5)'
+      ctx.strokeStyle = getCssVariableValue('--color-accent-red')
       ctx.arc(centerX, centerY, countDegressPercentage(15), 0, 2 * Math.PI)
       ctx.arc(centerX, centerY, countDegressPercentage(30), 0, 2 * Math.PI)
       ctx.stroke()
 
       // middle elevation
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(142, 34, 213, .5)'
+      ctx.strokeStyle = getCssVariableValue('--color-accent-purple')
       ctx.arc(centerX, centerY, countDegressPercentage(45), 0, 2 * Math.PI)
       ctx.arc(centerX, centerY, countDegressPercentage(60), 0, 2 * Math.PI)
       ctx.stroke()
 
       // high elevation
       ctx.beginPath()
-      ctx.strokeStyle = 'rgba(34, 213, 164, .5)'
+      ctx.strokeStyle = getCssVariableValue('--color-accent-green')
       ctx.arc(centerX, centerY, countDegressPercentage(75), 0, 2 * Math.PI)
       ctx.arc(centerX, centerY, countDegressPercentage(90), 0, 2 * Math.PI)
       ctx.stroke()
@@ -212,7 +215,7 @@ export default {
   width: 100%;
   height: 100%;
 
-  background: #242729;
+  background: var(--color-bg-light);
   padding: 80px 20px 20px;
 
   .content {
@@ -232,11 +235,11 @@ export default {
           font-weight: 100;
         }
 
-        color: rgb(34, 213, 164);
+        color: var(--color-accent-green);
         margin-bottom: 5px;
 
         b {
-          color: #5F6D77;
+          color: var(--color-font-dark);
         }
       }
     }
@@ -250,7 +253,7 @@ export default {
       justify-content: center;
 
       .heading {
-        color: #5F6D77;
+        color: var(--color-font-dark);
         font-size: 1rem;
         text-align: center;
       }
@@ -267,7 +270,7 @@ export default {
 
       canvas {
         background: rgba(0, 0, 0, .15);
-        border: 1px solid #5F6D77;
+        border: 1px solid var(--color-font-dark);
         border-radius: 50%;
       }
     }

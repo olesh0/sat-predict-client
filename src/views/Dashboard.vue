@@ -1,5 +1,10 @@
 <template>
   <div class="wrapper">
+    <app-settings-modal
+      :show="showSettingsModal"
+      @close="showSettingsModal = false"
+    />
+
     <app-selected-sattelite class="selected-sattelite" />
 
     <app-predicted-passes class="predicted-passes" />
@@ -32,13 +37,22 @@
 
       <div class="map-wrapper">
         <div class="sections">
-          <div
-            v-for="(section) in sections"
-            v-bind:key="section"
-            @click="selectedSection = section"
-            class="section"
-            :class="{ selected: selectedSection === section }"
-          >{{section}}</div>
+          <div class="list">
+            <div
+              v-for="(section) in sections"
+              v-bind:key="section"
+              @click="selectedSection = section"
+              class="section"
+              :class="{ selected: selectedSection === section }"
+            >{{section}}</div>
+          </div>
+
+          <button
+            class="settings-icon"
+            @click="showSettingsModal = true"
+          >
+            <Settings />
+          </button>
         </div>
 
         <app-map v-if="selectedSection === 'Map'" class="app-map" />
@@ -54,12 +68,14 @@
 import { mapActions, mapGetters } from 'vuex'
 import store from '@/store'
 
+import Settings from '@/assets/icons/Settings'
 import AppSelectedSattelite from '@/components/templates/dashboard/AppSelectedSattelite.vue'
 import AppPredictedPasses from '@/components/templates/dashboard/AppPredictedPasses.vue'
 import AppMap from '@/components/templates/dashboard/AppMap.vue'
 import AppCompass from '@/components/templates/dashboard/AppCompass.vue'
 import AppSunAndMoon from '@/components/templates/dashboard/AppSunAndMoon.vue'
 import AppUserCoords from '@/components/templates/dashboard/AppUserCoords.vue'
+import AppSettingsModal from '@/components/templates/dashboard/AppSettingsModal.vue'
 
 export default {
   data() {
@@ -67,6 +83,7 @@ export default {
       sections: ['Map', 'Compass', 'Sun & Moon', 'Coords'],
       selectedSection: 'Map',
       __FAVORITES__: 'Favorites',
+      showSettingsModal: false,
     }
   },
   computed: {
@@ -108,10 +125,12 @@ export default {
   components: {
     AppSelectedSattelite,
     AppPredictedPasses,
+    AppSettingsModal,
     AppCompass,
     AppSunAndMoon,
     AppUserCoords,
     AppMap,
+    Settings,
   },
 }
 </script>
@@ -129,7 +148,7 @@ export default {
 
   .selected-sattelite,
   .predicted-passes {
-    background: #242729;
+    background: var(--color-bg-light);
     padding: 2rem;
   }
 
@@ -158,24 +177,52 @@ export default {
       left: 0;
 
       padding: 10px;
-      background: #242729;
-      justify-content: flex-start;
+      background: var(--color-bg-light);
       font-size: 1.1rem;
 
       display: grid;
-      grid-template-columns: repeat(4, auto);
-      grid-gap: 20px;
+      grid-template-columns: 1fr auto;
+      grid-gap: 15px;
+
+      align-items: center;
 
       margin-bottom: 5px;
       width: 100%;
 
-      .section {
-        padding: 5px 7px;
-        color: #5F6D77;
-        cursor: pointer;
+      .list {
+        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: repeat(4, auto);
+        grid-gap: 20px;
 
-        &.selected {
-          color: #22D5A4;
+        .section {
+          padding: 5px 7px;
+          color: var(--color-font-dark);
+          cursor: pointer;
+
+          &.selected {
+            color: var(--color-accent-green);
+          }
+        }
+      }
+
+      .settings-icon {
+        background: transparent;
+        border: 0;
+        outline: none;
+        padding: 5px;
+
+        svg {
+          height: 20px;
+          fill: var(--color-font-dark);
+          cursor: pointer;
+          margin: 0 10px;
+
+          transition: all 150ms;
+        }
+
+        &:hover {
+          svg { fill: var(--color-font-main) }
         }
       }
     }
@@ -188,7 +235,7 @@ export default {
 
       width: 100%;
       height: 100%;
-      background: #242729;
+      background: var(--color-bg-light);
       padding: 2rem;
 
       opacity: 0;
@@ -217,10 +264,10 @@ export default {
         .item {
           cursor: pointer;
           margin-bottom: 10px;
-          color: #5F6D77;
+          color: var(--color-font-dark);
 
           &:hover {
-            color: #eee;
+            color: var(--color-font-main);
             text-decoration: underline;
           }
         }
