@@ -60,6 +60,8 @@ export default Vue.extend({
   },
   methods: {
     handleMapClick: () => {},
+    getCssVariableValue: (name, element = document.getElementById('app')) =>
+      getComputedStyle(element).getPropertyValue(name)
   },
   data() {
     return {
@@ -90,9 +92,9 @@ export default Vue.extend({
       shapeData: worldMap,
       layerType: 'Geometry',
       shapeSettings: {
-        fill: '#191A1A',
+        fill: this.getCssVariableValue('--map-fill-color'),
         border: {
-          color: '#454545',
+          color: this.getCssVariableValue('--map-border-color'),
           width: 1,
         }
       },
@@ -123,8 +125,8 @@ export default Vue.extend({
 
 .marker-template {
   border-radius: 50%;
-  background: rgba(213, 34, 34, .2);
-  border: 2px solid rgba(213, 34, 34, .8);
+  background: var(--color-accent-red-fade);
+  border: 2px solid var(--color-accent-red);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -135,21 +137,21 @@ export default Vue.extend({
   transition: all 1s;
 
   &.user-location {
-    background: rgba(142, 34, 213, .2);
-    border-color: rgba(142, 34, 213, .8);
+    background: var(--color-accent-purple-fade);
+    border-color: var(--color-accent-purple);
 
     width: 55px;
     height: 55px;
 
     .pint {
-      background: #8E22D5;
+      background: var(--color-accent-purple);
     }
   }
 
   .point {
     width: 5px;
     height: 5px;
-    background: rgba(213, 34, 34, 1);
+    background: var(--color-accent-red);
     border-radius: 4px;
   }
 }

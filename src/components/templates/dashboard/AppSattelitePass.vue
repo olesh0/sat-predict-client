@@ -53,8 +53,6 @@
 </template>
 
 <script>
-import SchemasList from "@/assets/schemas-list.json"
-
 export default {
   data() {
     return {
@@ -95,13 +93,23 @@ export default {
       }
     },
     colorSchema() {
-      if (this.isSatInfo) return SchemasList.green
+      const generateColor = (color) => ({
+        color: `var(--color-accent-${color})`,
+        highlight: `var(--color-accent-${color}-fade)`,
+        transparent: `var(--color-accent-${color}-ultra-fade)`,
+      })
+
+      if (this.isSatInfo) generateColor('green')
 
       const { maxElevation: elevationAngle } = this.info.pass
 
-      if (elevationAngle < 30) return SchemasList.red
-      if (elevationAngle >= 30 && elevationAngle < 60) return SchemasList.purple
-      if (elevationAngle >= 60) return SchemasList.green
+      let color
+
+      if (elevationAngle < 30) color = 'red'
+      if (elevationAngle >= 30 && elevationAngle < 60) color = 'purple'
+      if (elevationAngle >= 60) color = 'green'
+
+      return generateColor(color)
     },
   },
   props: {
@@ -119,7 +127,6 @@ export default {
 <style lang="less" scoped>
 .app-sattelite-pass {
   border-left: 7px solid;
-  background: rgba(34, 213, 164, .2);
   padding: 1rem .7rem;
   padding-right: 1.75rem;
   font-size: 1rem;
@@ -129,7 +136,7 @@ export default {
   &.selected {
     .sat-info {
       .pass-time {
-        color: #eee;
+        color: var(--color-font-main);
       }
     }
   }
@@ -148,22 +155,22 @@ export default {
         font-size: 1rem;
         margin-left: 10px;
 
-        color: #cc361e;
-        border: 1px solid #cc361e;
+        color: var(--color-accent-red);
+        border: 1px solid var(--color-accent-red);
         padding: 7px;
         border-radius: 4px;
       }
     }
 
     .pass-time {
-      color: #848F97;
+      color: var(--color-font-light);
     }
   }
 
   .pass-in-progress {
     font-size: .9rem;
     align-items: center;
-    color: #22D5A4;
+    color: var(--color-accent-green);
 
     display: grid;
     grid-template-columns: auto 1fr;
@@ -192,7 +199,7 @@ export default {
       .bar {
         width: 2px;
         height: 15px;
-        background: #22D5A4;
+        background: var(--color-accent-green);
         border-radius: 5px;
 
         transition: all 300ms;

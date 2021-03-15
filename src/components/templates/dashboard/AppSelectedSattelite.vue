@@ -227,14 +227,14 @@ export default {
       cursor: pointer;
 
       .star {
-        stroke: #5F6D77;
+        stroke: var(--color-font-dark);
         fill: none;
 
         transition: all .15s;
 
         &.selected {
-          fill: #22D5A4;
-          stroke: #22D5A4;
+          fill: var(--color-accent-green);
+          stroke: var(--color-accent-green);
         }
       }
     }
@@ -257,11 +257,11 @@ export default {
         justify-content: space-between;
 
         .label {
-          color: #5F6D77;
+          color: var(--color-font-dark);
         }
 
         .value {
-          color: #22D5A4;
+          color: var(--color-accent-green);
         }
       }
     }
@@ -277,7 +277,7 @@ export default {
     visibility: hidden;
     opacity: 0;
 
-    background: rgba(213, 34, 34, .2);
+    background: var(--color-accent-red-ultra-fade);
     transition: all 300ms;
 
     &.show {
@@ -291,7 +291,7 @@ export default {
       width: 30%;
       height: 100%;
 
-      background: rgb(213, 34, 34);
+      background: var(--color-accent-red);
       transition: all 700ms;
     }
   }

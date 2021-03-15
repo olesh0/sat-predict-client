@@ -1,0 +1,30 @@
+[
+  {
+    "name": {
+      "default": "Default Dark",
+      "camelCase": "defaultDark"
+    },
+    "type": "__DARK__"
+  },
+  {
+    "name": {
+      "default": "Spacegray",
+      "camelCase": "spacegray"
+    },
+    "type": "__DARK__"
+  },
+  {
+    "name": {
+      "default": "Absolute dark",
+      "camelCase": "absoluteDark"
+    },
+    "type": "__DARK__"
+  },
+  {
+    "name": {
+      "default": "Default Light",
+      "camelCase": "defaultLight"
+    },
+    "type": "__LIGHT__"
+  }
+]
