@@ -99,6 +99,10 @@ export default {
         transparent: `var(--color-accent-${color}-ultra-fade)`,
       })
 
+      if (!this.info || !this.info.pass) {
+        return generateColor('purple')
+      }
+
       if (this.isSatInfo) generateColor('green')
 
       const { maxElevation: elevationAngle } = this.info.pass
